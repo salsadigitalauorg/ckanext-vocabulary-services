@@ -80,7 +80,10 @@ setup(
     # pip to create the appropriate form of executable for the target platform.
     entry_points='''
         [ckan.plugins]
-        vocabulary_service=ckanext.vocabulary-service.plugin:VocabularyServicePlugin
+        vocabulary_service=ckanext.vocabulary_service.plugin:VocabularyServicePlugin
+
+        [paste.paster_command]
+        initdb = ckanext.vocabulary_service.command:InitDBCommand
 
         [babel.extractors]
         ckan = ckan.lib.extract:extract_ckan

@@ -1,0 +1,32 @@
+{% extends "admin/base.html" %}
+
+{% block primary_content_inner %}
+
+  <a href="{{ h.url_for('vocabulary_services.index') }}">&lt; Back</a>
+
+  <h2>Vocabulary terms</h2>
+
+  {% if terms %}
+    <h3>Total: {{ terms|length }}</h3>
+    <table class="table table-bordered">
+      <thead>
+        <th>Label</th>
+        <th>URI</th>
+        <th>Created</th>
+        <th>Updated</th>
+      </thead>
+      <tbody>
+        {% for term in terms %}
+        <tr>
+          <td>{{ term.label }}</td>
+          <td>{{ term.uri }}</td>
+          <td>{{ term.date_created }}</td>
+          <td>{{ term.date_modified }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+{% endblock %}
+
+{% block secondary_content %}{% endblock %}

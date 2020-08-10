@@ -1,0 +1,90 @@
+{% extends "admin/base.html" %}
+
+{% import 'macros/form.html' as form %}
+
+{% block primary_content_inner %}
+
+  <h2>Add a vocabulary service</h2>
+
+  <form id="dataset-edit" class="dataset-form" method="post" action="{{ h.url_for('vocabulary_services.index') }}" novalidate>
+
+    {{ form.input(
+        'name',
+        id='field-name',
+        label=_('Name'),
+        value=data.name,
+        error=errors.name,
+        classes=['control-medium'],
+        is_required=True
+    ) }}
+
+    {{ form.select(
+        'type',
+        label=_('Type'),
+        options=h.get_vocabulary_service_types(),
+        selected=data.type,
+        error=errors.type,
+        is_required=True
+    ) }}
+
+    {{ form.input(
+        'uri',
+        id='field-uri',
+        label=_('URI'),
+        value=data.uri,
+        error=errors.uri,
+        classes=['control-medium'],
+        is_required=True
+    ) }}
+
+    {{ form.select(
+        'update_frequency',
+        label=_('Update frequency'),
+        options=h.get_vocabulary_service_update_frequencies(),
+        selected=data.update_frequency,
+        error=errors.update_frequency,
+        is_required=True
+    ) }}
+
+    <div class="form-actions">
+      <button class="btn btn-primary" type="submit">{{ _('Add') }}</button>
+    </div>
+
+  </form>
+
+  <hr />
+
+  <h2>Vocabulary services</h2>
+
+  {% if services %}
+    <h3>Total: {{ services|length }}</h3>
+    <table class="table table-bordered">
+      <thead>
+        <th width="25%">Name</th>
+        <th width="12%">Type</th>
+        <th>URI</th>
+        <th width="12%">Terms</th>
+        <th width="25%">Actions</th>
+      </thead>
+      <tbody>
+        {% for service in services %}
+        <tr>
+          <td>{{ service.name }}</td>
+          <td>{{ service.type }}</td>
+          <td>{{ service.uri }}</td>
+          <td>
+            <a href="{{ h.url_for('vocabulary_services.terms', id=service.id) }}">View terms</a>
+          </td>
+          <td>
+            <a href="{{ h.url_for('vocabulary_services.refresh', id=service.id) }}" class="btn btn-sm btn-warning">Refresh</a>
+            <a href="" class="btn btn-sm btn-primary">Edit</a>
+            <a href="" class="btn btn-sm btn-danger">Delete</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
+{% endblock %}
+
+{% block secondary_content %}{% endblock %}
