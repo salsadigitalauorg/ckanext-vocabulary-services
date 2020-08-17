@@ -1,6 +1,6 @@
 import logging
 
-from ckanext.vocabulary_service import model
+from ckanext.vocabulary_services import model
 
 log = logging.getLogger(__name__)
 

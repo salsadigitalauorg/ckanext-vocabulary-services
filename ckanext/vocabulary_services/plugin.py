@@ -1,16 +1,17 @@
-import blueprint
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
-import helpers
 
-from ckanext.vocabulary_service.logic.action import get, create
+from ckanext.vocabulary_services import blueprint, helpers
+from ckanext.vocabulary_services.cli import get_commands
+from ckanext.vocabulary_services.logic.action import get, create
 
 
-class VocabularyServicePlugin(plugins.SingletonPlugin):
+class VocabularyServicesPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IBlueprint)
     plugins.implements(plugins.IActions)
     plugins.implements(plugins.ITemplateHelpers)
+    plugins.implements(plugins.IClick)
 
     # IConfigurer
 
@@ -42,3 +43,8 @@ class VocabularyServicePlugin(plugins.SingletonPlugin):
             'get_vocabulary_service_types': helpers.get_vocabulary_service_types,
             'get_vocabulary_service_update_frequencies': helpers.get_vocabulary_service_update_frequencies
         }
+
+    # IClick
+
+    def get_commands(self):
+        return get_commands()

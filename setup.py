@@ -10,7 +10,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name='''ckanext-vocabulary-service''',
+    name='''ckanext-vocabulary-services''',
 
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
@@ -21,7 +21,7 @@ setup(
     long_description=long_description,
 
     # The project's main homepage.
-    url='https://github.com/salsadigitalauorg/ckanext-vocabulary-service',
+    url='https://github.com/salsadigitalauorg/ckanext-vocabulary-services',
 
     # Author details
     author='''Salsa Digital''',
@@ -80,10 +80,10 @@ setup(
     # pip to create the appropriate form of executable for the target platform.
     entry_points='''
         [ckan.plugins]
-        vocabulary_service=ckanext.vocabulary_service.plugin:VocabularyServicePlugin
+        vocabulary_services=ckanext.vocabulary_services.plugin:VocabularyServicesPlugin
 
         [paste.paster_command]
-        initdb = ckanext.vocabulary_service.command:InitDBCommand
+        initdb = ckanext.vocabulary_services.command:InitDBCommand
 
         [babel.extractors]
         ckan = ckan.lib.extract:extract_ckan

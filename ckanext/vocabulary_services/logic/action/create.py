@@ -1,4 +1,4 @@
-from ckanext.vocabulary_service import model
+from ckanext.vocabulary_services import model
 
 
 def vocabulary_service_create(context, data_dict):
