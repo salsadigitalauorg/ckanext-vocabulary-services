@@ -12,11 +12,11 @@ parse_params = logic.parse_params
 request = toolkit.request
 tuplize_dict = logic.tuplize_dict
 
-
 vocabulary_services = Blueprint('vocabulary_services', __name__, url_prefix=u'/ckan-admin')
 
 
 def index():
+    # @TODO: Restrict to sysadmins
     data = {}
     if request.method == 'POST':
         data = clean_dict(dict_fns.unflatten(tuplize_dict(parse_params(
@@ -35,7 +35,10 @@ def index():
 
 
 def refresh(id):
+    # @TODO: Restrict to sysadmins
     service = get_action('get_vocabulary_service')({}, id)
+
+    # @TODO: Implement the fetching of the terms from the actual vocabulary endpoint
     data = [
         {'label': 'Blah', 'uri': 'https://www.google.com/blah'},
         {'label': 'Wah', 'uri': 'https://www.google.com/wah'},
@@ -49,7 +52,11 @@ def refresh(id):
                 'label': d['label'],
                 'uri': d['uri'],
             }
+            # @TODO: Implement as an UPSERT
             get_action('vocabulary_service_term_create')({}, data_dict)
+
+            # @TODO: Do we need to check for terms removed from the vocabulary?
+            #       And do we need to check if the term is in user before deleting?
 
         h.flash_success('Terms in vocabulary refreshed')
 
@@ -57,6 +64,7 @@ def refresh(id):
 
 
 def terms(id):
+    # @TODO: Restrict to sysadmins
     terms = get_action('get_vocabulary_service_terms')({}, id)
 
     return toolkit.render('vocabulary/terms.html',
@@ -66,7 +74,7 @@ def terms(id):
 
 
 vocabulary_services.add_url_rule(u'/vocabulary-services',
-                           methods=[u'GET', u'POST'], view_func=index)
+                                 methods=[u'GET', u'POST'], view_func=index)
 
 vocabulary_services.add_url_rule(u'/vocabulary-service/refresh/<id>', view_func=refresh)
 
