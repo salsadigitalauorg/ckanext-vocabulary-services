@@ -54,6 +54,12 @@ def refresh(id):
                 log.debug('>>> Finished fetching vocabulary from CSIRO service.')
             else:
                 log.error('>>> ERROR Attempting to fetch vocabulary from CSIRO service')
+        elif service.type == 'vocprez':
+            log.debug('>>> Attempting to fetch vocabulary from VocPrez service...')
+            if get_action('get_vocprez_vocabulary_terms')({}, service):
+                log.debug('>>> Finished fetching vocabulary from VocPrez service.')
+            else:
+                log.error('>>> ERROR Attempting to fetch vocabulary from VocPrez service')
         else:
             for d in data:
                 data_dict = {
