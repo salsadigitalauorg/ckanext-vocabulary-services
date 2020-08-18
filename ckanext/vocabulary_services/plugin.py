@@ -34,6 +34,7 @@ class VocabularyServicesPlugin(plugins.SingletonPlugin):
             'get_vocabulary_services': get.vocabulary_services,
             'get_vocabulary_service': get.vocabulary_service,
             'get_vocabulary_service_terms': get.vocabulary_service_terms,
+            'get_csiro_vocabulary_terms': get.csiro_vocabulary_terms,
             'vocabulary_service_create': create.vocabulary_service_create,
             'vocabulary_service_term_create': create.vocabulary_service_term_create,
         }
@@ -43,7 +44,8 @@ class VocabularyServicesPlugin(plugins.SingletonPlugin):
     def get_helpers(self):
         return {
             'get_vocabulary_service_types': helpers.get_vocabulary_service_types,
-            'get_vocabulary_service_update_frequencies': helpers.get_vocabulary_service_update_frequencies
+            'get_vocabulary_service_update_frequencies': helpers.get_vocabulary_service_update_frequencies,
+            'scheming_vocabulary_service_choices': helpers.scheming_vocabulary_service_choices,
         }
 
     # IClick
