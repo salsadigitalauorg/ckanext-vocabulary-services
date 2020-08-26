@@ -24,12 +24,13 @@ def vocabulary_service(context, reference):
     return model.VocabularyService.get(reference)
 
 
-def vocabulary_service_terms(context, id):
+def vocabulary_service_terms(context, name):
     # @TODO: check access / write authentication function
     terms = []
 
     try:
-        terms = model.VocabularyServiceTerm.all(id)
+        data = vocabulary_service(context, name)
+        terms = data.terms
     except Exception as e:
         log.error(str(e))
 
@@ -75,6 +76,7 @@ def csiro_vocabulary_terms(context, service):
         log.error(str(e))
 
     return False
+
 
 def vocprez_vocabulary_terms(context, service):
     """

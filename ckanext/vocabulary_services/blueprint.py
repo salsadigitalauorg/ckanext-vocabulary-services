@@ -19,21 +19,30 @@ vocabulary_services = Blueprint('vocabulary_services', __name__, url_prefix=u'/c
 
 def index():
     # @TODO: Restrict to sysadmins
-    data = {}
-    if request.method == 'POST':
-        data = clean_dict(dict_fns.unflatten(tuplize_dict(parse_params(
-            request.form))))
-        # @TODO: Validate data
-        get_action('vocabulary_service_create')({}, data)
+    try:
+        data = {}
+        errors = {}
+        if request.method == 'POST':
+            data = clean_dict(dict_fns.unflatten(tuplize_dict(parse_params(
+                request.form))))
+            try:
+                get_action('vocabulary_service_create')({}, data)
+            except toolkit.ValidationError as e:
+                log.warn(e)
+                errors = e.error_dict
+                log.debug(errors)
 
-    services = get_action('get_vocabulary_services')({}, {})
+        services = get_action('get_vocabulary_services')({}, {})
 
-    return toolkit.render('vocabulary/index.html',
-                          extra_vars={
-                              'data': data,
-                              'errors': {},
-                              'services': services
-                          })
+        return toolkit.render('vocabulary/index.html',
+                              extra_vars={
+                                  'data': data,
+                                  'errors': errors,
+                                  'services': services
+                              })
+    except Exception as e:
+        log.error(e)
+        toolkit.abort(503, str(e))
 
 
 def refresh(id):
