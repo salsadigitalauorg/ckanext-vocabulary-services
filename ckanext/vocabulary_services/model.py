@@ -2,8 +2,9 @@ import datetime
 
 from ckan.model import meta
 from ckan.model import types as _types
-from sqlalchemy import types, Column, Table, func
+from sqlalchemy import types, Column, Table, func, ForeignKey
 from ckan.model.domain_object import DomainObject
+from sqlalchemy.orm import relation
 
 
 vocabulary_service_table = Table('vocabulary_service', meta.metadata,
@@ -33,7 +34,7 @@ vocabulary_service_term_table = Table('vocabulary_service_term', meta.metadata,
                                              primary_key=True,
                                              default=_types.make_uuid),
                                       Column('vocabulary_service_id', types.UnicodeText,
-                                             nullable=False),
+                                             ForeignKey('vocabulary_service.id'), nullable=False),
                                       Column('label', types.UnicodeText,
                                              nullable=False),
                                       Column('uri', types.UnicodeText,
@@ -98,15 +99,8 @@ class VocabularyServiceTerm(DomainObject):
 
         return vocabulary_service_term
 
-    @classmethod
-    def all(cls, vocabulary_service_id):
-        """
-        Returns all terms for a vocabulary service.
-        """
-        q = meta.Session.query(cls).filter(cls.vocabulary_service_id == vocabulary_service_id)
 
-        return q.order_by(cls.label).all()
-
-
-meta.mapper(VocabularyService, vocabulary_service_table)
+meta.mapper(VocabularyService, vocabulary_service_table, properties={
+    'terms': relation(lambda: VocabularyServiceTerm, order_by=lambda: VocabularyServiceTerm.label)
+})
 meta.mapper(VocabularyServiceTerm, vocabulary_service_term_table)
