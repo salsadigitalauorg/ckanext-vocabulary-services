@@ -2,13 +2,15 @@ import logging
 import requests
 
 from ckan.plugins.toolkit import get_action
-from ckanext.vocabulary_services import model
+from ckanext.vocabulary_services import helpers, model
 
 log = logging.getLogger(__name__)
 
 
 def vocabulary_services(context, data_dict):
-    # @TODO: check access / write authentication function
+
+    helpers.check_access({})
+
     services = []
 
     try:
@@ -20,7 +22,6 @@ def vocabulary_services(context, data_dict):
 
 
 def vocabulary_service(context, reference):
-    # @TODO: check access / write authentication function
     return model.VocabularyService.get(reference)
 
 
@@ -65,7 +66,7 @@ def csiro_vocabulary_terms(context, service):
                 label = term.get('rdfs:label', None)
                 if uri and label:
                     # Create the term in the internal vocabulary service
-                    get_action('vocabulary_service_term_create')({}, {
+                    get_action('vocabulary_service_term_upsert')({}, {
                         'vocabulary_service_id': service.id,
                         'label': label,
                         'uri': uri,
@@ -103,7 +104,7 @@ def vocprez_vocabulary_terms(context, service):
                 pref_label = binding.get('prefLabel', None)
                 if concept and pref_label:
                     # Create the term in the internal vocabulary service
-                    get_action('vocabulary_service_term_create')({}, {
+                    get_action('vocabulary_service_term_upsert')({}, {
                         'vocabulary_service_id': service.id,
                         'label': pref_label['value'],
                         'uri': concept['value'],

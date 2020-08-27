@@ -1,5 +1,7 @@
 import logging
 
+from ckan.lib.base import abort
+from ckan.logic import check_access as logic_check_access
 from ckan.plugins.toolkit import get_action
 
 log = logging.getLogger(__name__)
@@ -37,3 +39,11 @@ def scheming_vocabulary_service_choices(field):
             log.error(str(e))
 
     return choices
+
+
+def check_access(context):
+    # `config_option_update` only accessible to sysadmin users
+    try:
+        logic_check_access('config_option_update', context, {})
+    except Exception as e:
+        abort(404, 'Not found')

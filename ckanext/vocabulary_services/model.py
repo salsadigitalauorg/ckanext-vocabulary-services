@@ -5,6 +5,7 @@ from ckan.model import types as _types
 from sqlalchemy import types, Column, Table, func, ForeignKey
 from ckan.model.domain_object import DomainObject
 from sqlalchemy.orm import relation
+from sqlalchemy import or_
 
 
 vocabulary_service_table = Table('vocabulary_service', meta.metadata,
@@ -95,6 +96,16 @@ class VocabularyServiceTerm(DomainObject):
     def get(cls, reference):
         '''Returns a VocabularyServiceTerm object referenced by its id.'''
         query = meta.Session.query(cls).filter(cls.id == reference)
+        vocabulary_service_term = query.first()
+
+        return vocabulary_service_term
+
+    @classmethod
+    def get_by_label_or_uri(cls, vocabulary_service_id, label, uri):
+        '''Returns a VocabularyServiceTerm object referenced by its id.'''
+        query = meta.Session.query(cls)\
+            .filter(cls.vocabulary_service_id == vocabulary_service_id)\
+            .filter(or_(cls.label == label, cls.uri == uri))
         vocabulary_service_term = query.first()
 
         return vocabulary_service_term
