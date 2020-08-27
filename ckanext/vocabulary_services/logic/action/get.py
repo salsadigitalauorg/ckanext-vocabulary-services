@@ -65,7 +65,7 @@ def csiro_vocabulary_terms(context, service):
                 label = term.get('rdfs:label', None)
                 if uri and label:
                     # Create the term in the internal vocabulary service
-                    get_action('vocabulary_service_term_create')({}, {
+                    get_action('vocabulary_service_term_upsert')({}, {
                         'vocabulary_service_id': service.id,
                         'label': label,
                         'uri': uri,
@@ -103,7 +103,7 @@ def vocprez_vocabulary_terms(context, service):
                 pref_label = binding.get('prefLabel', None)
                 if concept and pref_label:
                     # Create the term in the internal vocabulary service
-                    get_action('vocabulary_service_term_create')({}, {
+                    get_action('vocabulary_service_term_upsert')({}, {
                         'vocabulary_service_id': service.id,
                         'label': pref_label['value'],
                         'uri': concept['value'],

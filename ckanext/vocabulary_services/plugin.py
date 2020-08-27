@@ -38,6 +38,7 @@ class VocabularyServicesPlugin(plugins.SingletonPlugin):
             'get_vocprez_vocabulary_terms': get.vocprez_vocabulary_terms,
             'vocabulary_service_create': create.vocabulary_service_create,
             'vocabulary_service_term_create': create.vocabulary_service_term_create,
+            'vocabulary_service_term_upsert': create.vocabulary_service_term_upsert,
         }
 
     # ITemplateHelpers
