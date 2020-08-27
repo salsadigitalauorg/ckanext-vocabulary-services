@@ -4,6 +4,7 @@ import ckan.plugins.toolkit as toolkit
 import logging
 
 from ckan.common import request
+from ckanext.vocabulary_services import helpers
 from flask import Blueprint
 
 clean_dict = logic.clean_dict
@@ -18,7 +19,9 @@ vocabulary_services = Blueprint('vocabulary_services', __name__, url_prefix=u'/c
 
 
 def index():
-    # @TODO: Restrict to sysadmins
+
+    helpers.check_access({})
+
     try:
         data = {}
         errors = {}
@@ -46,54 +49,39 @@ def index():
 
 
 def refresh(id):
-    # @TODO: Restrict to sysadmins
-    service = get_action('get_vocabulary_service')({}, id)
 
-    # @TODO: Implement the fetching of the terms from the actual vocabulary endpoint
-    data = [
-        {'label': 'Blah', 'uri': 'https://www.google.com/blah'},
-        {'label': 'Wah', 'uri': 'https://www.google.com/wah'},
-        {'label': 'Haha', 'uri': 'https://www.google.com/haha'},
-    ]
+    helpers.check_access({})
+
+    service = get_action('get_vocabulary_service')({}, id)
 
     if service:
         if service.type == 'csiro':
             log.debug('>>> Attempting to fetch vocabulary from CSIRO service...')
             if get_action('get_csiro_vocabulary_terms')({}, service):
                 log.debug('>>> Finished fetching vocabulary from CSIRO service.')
+                h.flash_success('Terms in vocabulary refreshed')
             else:
                 log.error('>>> ERROR Attempting to fetch vocabulary from CSIRO service')
         elif service.type == 'vocprez':
             log.debug('>>> Attempting to fetch vocabulary from VocPrez service...')
             if get_action('get_vocprez_vocabulary_terms')({}, service):
                 log.debug('>>> Finished fetching vocabulary from VocPrez service.')
+                h.flash_success('Terms in vocabulary refreshed')
             else:
                 log.error('>>> ERROR Attempting to fetch vocabulary from VocPrez service')
         else:
-            for d in data:
-                data_dict = {
-                    'vocabulary_service_id': service.id,
-                    'label': d['label'],
-                    'uri': d['uri'],
-                }
-                # @TODO: Implement as an UPSERT
-                get_action('vocabulary_service_term_create')({}, data_dict)
-
-                # @TODO: Do we need to check for terms removed from the vocabulary?
-                #       And do we need to check if the term is in user before deleting?
-
-        h.flash_success('Terms in vocabulary refreshed')
+            h.flash_error('Vocabulary service not currently implemented.')
 
     return h.redirect_to('vocabulary_services.index')
 
 
 def terms(id):
-    # @TODO: Restrict to sysadmins
-    terms = get_action('get_vocabulary_service_terms')({}, id)
+
+    helpers.check_access({})
 
     return toolkit.render('vocabulary/terms.html',
                           extra_vars={
-                              'terms': terms,
+                              'terms': get_action('get_vocabulary_service_terms')({}, id),
                           })
 
 

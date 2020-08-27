@@ -1,16 +1,10 @@
-from ckan.logic import check_access as logic_check_access
 from ckanext.vocabulary_services.model import VocabularyService, VocabularyServiceTerm
-from ckanext.vocabulary_services import validator
-
-
-def check_access(context):
-    # `config_option_update` only accessible to sysadmin users
-    return logic_check_access('config_option_update', context, {})
+from ckanext.vocabulary_services import helpers, validator
 
 
 def vocabulary_service_create(context, data_dict):
 
-    check_access(context)
+    helpers.check_access(context)
 
     session = context['session']
 
@@ -32,7 +26,7 @@ def vocabulary_service_create(context, data_dict):
 
 def vocabulary_service_term_create(context, data_dict):
 
-    check_access(context)
+    helpers.check_access(context)
 
     session = context['session']
 
@@ -50,7 +44,7 @@ def vocabulary_service_term_create(context, data_dict):
 
 def vocabulary_service_term_upsert(context, data_dict):
 
-    check_access(context)
+    helpers.check_access(context)
 
     session = context['session']
 
