@@ -1,30 +1,72 @@
 # -*- coding: utf-8 -*-
 
 import click
-import ckan.plugins.toolkit as tk
+import logging
+
+from ckanapi import LocalCKAN, ValidationError
+from ckanext.vocabulary_services import model
+from datetime import datetime
+
+log = logging.getLogger(__name__)
 
 
-@click.command(u"example-iclick-hello")
-def hello_cmd():
-    """Example of single command.
+def refresh_required(service):
+    utc_now = datetime.utcnow()
+
+    delta = utc_now - service.date_last_processed
+
+    log.debug('>>> UTC now: %s' % utc_now)
+    log.debug('>>> Update frequency: %s' % service.update_frequency)
+    log.debug('>>> Last processed: %s' % service.date_last_processed)
+    log.debug('>>> Delta: %s' % delta)
+    log.debug('>>> Delta (total seconds): %s' % delta.total_seconds())
+
+    if service.update_frequency == 'daily':
+        if delta.total_seconds() / (60 * 60 * 24) > 1:
+            return True
+        else:
+            return False
+    elif service.update_frequency == 'weekly':
+        if delta.total_seconds() / (60 * 60 * 24 * 7) > 1:
+            return True
+        else:
+            return False
+    elif service.update_frequency == 'monthly':
+        if delta.total_seconds() / (60 * 60 * 24 * 30) > 1:
+            return True
+        else:
+            return False
+
+
+@click.command(u"vocabulary-services-refresh")
+def refresh_cmd():
+    """Refresh each of the internal vocabulary services' terms (if required)
     """
-    click.secho(u"Hello, World!", fg=u"green")
+    registry = LocalCKAN()
+
+    try:
+        # Load all vocabulary_service records
+        vocabulary_services = model.VocabularyService.all()
+
+        # Check each vocabulary_service to see if it needs to be refreshed
+        for service in vocabulary_services:
+            if refresh_required(service):
+                click.secho(u"Needs updating", fg=u"yellow")
+                registry.action.update_vocabulary_terms(id=service.id, uri=service.uri, type=service.type)
+            else:
+                click.secho(u"Doesn't need updating", fg=u"green")
+
+    except ValidationError as e:
+        log.error(str(e))
+
+    click.secho(u"COMPLETED: vocabulary-services-refresh", fg=u"green")
 
 
 @click.command(u"vocabulary-services-init-db")
 def init_db_cmd():
-    """Example of single command.
+    """Initialise the database tables required for internal vocabulary services
     """
-    click.secho(u"Hello init, World!", fg=u"green")
-
-    import logging
-    from ckanext.vocabulary_services import model
-
-    log = logging.getLogger(__name__)
-
-    log.info("starting command")
-
-    log.info("Initializing vocabulary services tables")
+    click.secho(u"Initializing vocabulary services tables", fg=u"green")
 
     try:
         model.vocabulary_service_table.create()
@@ -36,25 +78,8 @@ def init_db_cmd():
     except Exception as e:
         log.error(str(e))
 
-    log.info("Vocabulary services tables are setup")
-
-@click.group(u"example-iclick-bye")
-def bye_cmd():
-    """Example of group of commands.
-    """
-    pass
-
-
-@bye_cmd.command()
-@click.argument(u"name", required=False)
-def bye(name):
-    """Command with optional argument.
-    """
-    if not name:
-        tk.error_shout(u"I do not know your name.")
-    else:
-        click.secho(u"Bye, {}".format(name))
+    click.secho(u"Vocabulary services tables are setup", fg=u"green")
 
 
 def get_commands():
-    return [hello_cmd, bye_cmd, init_db_cmd]
+    return [init_db_cmd, refresh_cmd]
