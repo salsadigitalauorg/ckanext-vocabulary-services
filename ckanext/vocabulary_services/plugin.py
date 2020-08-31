@@ -3,7 +3,7 @@ import ckan.plugins.toolkit as toolkit
 
 from ckanext.vocabulary_services import blueprint, helpers
 from ckanext.vocabulary_services.cli import get_commands
-from ckanext.vocabulary_services.logic.action import get, create
+from ckanext.vocabulary_services.logic.action import get, create, update
 
 
 class VocabularyServicesPlugin(plugins.SingletonPlugin):
@@ -39,6 +39,8 @@ class VocabularyServicesPlugin(plugins.SingletonPlugin):
             'vocabulary_service_create': create.vocabulary_service_create,
             'vocabulary_service_term_create': create.vocabulary_service_term_create,
             'vocabulary_service_term_upsert': create.vocabulary_service_term_upsert,
+            'update_vocabulary_terms': update.update_vocabulary_terms,
+            'update_vocabulary_service_last_processed': update.vocabulary_service_last_processed
         }
 
     # ITemplateHelpers

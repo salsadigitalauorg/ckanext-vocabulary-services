@@ -55,22 +55,25 @@ def refresh(id):
     service = get_action('get_vocabulary_service')({}, id)
 
     if service:
+
+        data_dict = {
+            'id': service.id,
+            'uri': service.uri,
+        }
+
+        action = None
+
         if service.type == 'csiro':
-            log.debug('>>> Attempting to fetch vocabulary from CSIRO service...')
-            if get_action('get_csiro_vocabulary_terms')({}, service):
-                log.debug('>>> Finished fetching vocabulary from CSIRO service.')
-                h.flash_success('Terms in vocabulary refreshed')
-            else:
-                log.error('>>> ERROR Attempting to fetch vocabulary from CSIRO service')
+            action = 'get_csiro_vocabulary_terms'
         elif service.type == 'vocprez':
-            log.debug('>>> Attempting to fetch vocabulary from VocPrez service...')
-            if get_action('get_vocprez_vocabulary_terms')({}, service):
-                log.debug('>>> Finished fetching vocabulary from VocPrez service.')
+            action = 'get_vocprez_vocabulary_terms'
+
+        if action:
+            if get_action(action)({}, data_dict):
+                get_action('update_vocabulary_service_last_processed')({}, service.id)
                 h.flash_success('Terms in vocabulary refreshed')
-            else:
-                log.error('>>> ERROR Attempting to fetch vocabulary from VocPrez service')
         else:
-            h.flash_error('Vocabulary service not currently implemented.')
+            h.flash_error('Vocabulary service type %s not currently implemented.' % service.type)
 
     return h.redirect_to('vocabulary_services.index')
 
