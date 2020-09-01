@@ -3,8 +3,11 @@
 {% import 'macros/form.html' as form %}
 
 {% block primary_content_inner %}
-
-  <h2>Add a vocabulary service</h2>
+  {% if is_update %}
+    <h2>Edit vocabulary service: {{ data.title }}</h2>
+  {% else %}
+    <h2>Add a vocabulary service</h2>
+  {% endif %}
 
   <form id="dataset-edit" class="dataset-form" method="post" action="{{ h.url_for('vocabulary_services.index', id=data.id) if is_update else h.url_for('vocabulary_services.index')}}" novalidate>
 
