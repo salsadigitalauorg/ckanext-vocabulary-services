@@ -25,15 +25,37 @@ def index():
     try:
         data = {}
         errors = {}
+        is_update = False
+        vocab_service_id = request.args.get('id')
         if request.method == 'POST':
             data = clean_dict(dict_fns.unflatten(tuplize_dict(parse_params(
                 request.form))))
             try:
-                get_action('vocabulary_service_create')({}, data)
+                if vocab_service_id:
+                    get_action('vocabulary_service_edit')({}, data)
+                    h.flash_success('Vocabulary service %s updated.' % data['title'])
+
+                    return h.redirect_to('vocabulary_services.index')
+                else:
+                    get_action('vocabulary_service_create')({}, data)
+                    h.flash_success('Vocabulary service %s added.' % data['title'])
+
+                # Reset the form data.
+                data = {}
             except toolkit.ValidationError as e:
                 log.warn(e)
                 errors = e.error_dict
                 log.debug(errors)
+
+                if vocab_service_id:
+                    is_update = True
+                    h.flash_error('Error updating vocabulary service %s.' % data['title'])
+                else:
+                    h.flash_error('Error adding vocabulary service %s.' % data['title'])
+
+        elif request.method == 'GET' and vocab_service_id:
+            is_update = True
+            data = get_action('get_vocabulary_service')({}, vocab_service_id)
 
         services = get_action('get_vocabulary_services')({}, {})
 
@@ -41,7 +63,8 @@ def index():
                               extra_vars={
                                   'data': data,
                                   'errors': errors,
-                                  'services': services
+                                  'services': services,
+                                  'is_update': is_update
                               })
     except Exception as e:
         log.error(e)
@@ -87,10 +110,24 @@ def terms(id):
                               'terms': get_action('get_vocabulary_service_terms')({}, id),
                           })
 
+def delete(id):
+    """
+    Delete vocabulary service.
+    """
+    if request.method == 'POST':
+        try:
+            get_action('vocabulary_service_delete')({}, id)
+            h.flash_success('Vocabulary service deleted.')
+        except Exception as e:
+            log.error(e)
+            h.flash_error('Error deleting vocabulary service.')
+    else:
+        h.flash_error('Can not delete vocabulary service.')
 
-vocabulary_services.add_url_rule(u'/vocabulary-services',
-                                 methods=[u'GET', u'POST'], view_func=index)
+    return h.redirect_to('vocabulary_services.index')
 
+
+vocabulary_services.add_url_rule(u'/vocabulary-services', methods=[u'GET', u'POST'], view_func=index)
 vocabulary_services.add_url_rule(u'/vocabulary-service/refresh/<id>', view_func=refresh)
-
 vocabulary_services.add_url_rule(u'/vocabulary-service/terms/<id>', view_func=terms)
+vocabulary_services.add_url_rule(u'/vocabulary-service/delete/<id>', methods=[u'POST'], view_func=delete)
