@@ -82,6 +82,11 @@ class VocabularyService(DomainObject):
         query = meta.Session.query(cls)
         return query.filter(func.lower(cls.name) == func.lower(name)).first() is not None
 
+    @classmethod
+    def get_by_name(cls, name):
+        '''Returns true if there is a vocabulary with the same name (case insensitive)'''
+        query = meta.Session.query(cls)
+        return query.filter(func.lower(cls.name) == func.lower(name)).all()
 
 class VocabularyServiceTerm(DomainObject):
     """A VocabularyServiceTerm object represents a term from an external vocabulary

@@ -1,8 +1,8 @@
 import logging
 
 from ckan.plugins.toolkit import get_action
-from ckanext.vocabulary_services.model import VocabularyService
-from ckanext.vocabulary_services import helpers
+from ckanext.vocabulary_services.model import VocabularyService, VocabularyServiceTerm
+from ckanext.vocabulary_services import helpers, validator
 from datetime import datetime
 
 log = logging.getLogger(__name__)
@@ -43,3 +43,46 @@ def update_vocabulary_terms(context, data_dict):
         except Exception as e:
             log.error(str(e))
 
+
+def vocabulary_service_edit(context, data_dict):
+    """
+    Edit vocabulary service.
+    """
+    helpers.check_access(context)
+
+    # Load vocabulary service.
+    vocabulary_service = VocabularyService.get(data_dict['id'])
+
+    # Validate the form values.
+    validator.validate_vocabulary_service(context, data_dict, True)
+
+    try:
+        if vocabulary_service:
+            for key in data_dict:
+                setattr(vocabulary_service, key, data_dict[key])
+
+            vocabulary_service.save()
+    except Exception as e:
+        log.error(str(e))
+        raise Exception('Error updating vocabulary service.')
+
+def vocabulary_service_delete(context, id):
+    """
+    Delete vocabulary service and its term.
+    """
+    helpers.check_access(context)
+
+    try:
+        # Remove terms.
+        terms = get_action('get_vocabulary_service_terms')({}, id)
+
+        for term in terms:
+            term.delete()
+            term.commit()
+
+        vocabulary_service = VocabularyService.get(id)
+        vocabulary_service.delete()
+        vocabulary_service.commit()
+    except Exception as e:
+        log.error(e)
+        raise Exception("Error deleting vocabulary service.")
