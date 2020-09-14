@@ -33,6 +33,7 @@ def vocabulary_service_terms(context, name):
         data = vocabulary_service(context, name)
         terms = data.terms
     except Exception as e:
+        log.error('Vocabulary service name: {0}'.format(name))
         log.error(str(e))
 
     return terms
@@ -125,7 +126,7 @@ def vocprez_vocabulary_terms(context, data_dict):
                         pref_label = binding.get('prefLabel', None)
                         if concept and pref_label:
                             # Create the term in the internal vocabulary service
-                            get_action('vocabulary_service_term_upsert')({}, {
+                            get_action('vocabulary_service_term_upsert')(context, {
                                 'vocabulary_service_id': service_id,
                                 'label': pref_label['value'],
                                 'uri': concept['value'],
