@@ -13,6 +13,11 @@ log = logging.getLogger(__name__)
 def refresh_required(service):
     utc_now = datetime.utcnow()
 
+    # If a vocabulary_service does not have a `date_last_processed` refresh it
+    # i.e. it has never been processed
+    if not service.date_last_processed:
+        return True
+
     delta = utc_now - service.date_last_processed
 
     log.debug('>>> UTC now: %s' % utc_now)
