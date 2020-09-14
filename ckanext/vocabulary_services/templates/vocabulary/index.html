@@ -73,24 +73,37 @@
 
   <h2>Vocabulary services</h2>
 
+    <style>
+        table.vocabs tr td {
+            border: none;
+        }
+        table details {
+            display: inline-block;
+        }
+        tr.odd {
+            background-color: #f8f8f8;
+        }
+        tr.even {
+            background-color: transparent;
+        }
+    </style>
+
   {% if services %}
     <h3>Total: {{ services|length }}</h3>
-    <table class="table table-bordered">
+    <table class="table vocabs">
       <thead>
-        <th width="25%">Title</th>
+        <th width="35%">Title</th>
         <th>Name</th>
-        <th width="12%">Type</th>
-        <th>URI</th>
+        <th width="8%">Type</th>
         <th width="12%">Terms</th>
         <th width="25%">Actions</th>
       </thead>
       <tbody>
         {% for service in services %}
-        <tr>
-          <td>{{ service.title }}</td>
+        <tr class="{{ 'even' if loop.index % 2 == 0 else 'odd' }}">
+            <td><strong>{{ service.title }}</strong></td>
           <td>{{ service.name }}</td>
-          <td>{{ service.type }}</td>
-          <td>{{ service.uri }}</td>
+            <td><small>{{ service.type }}</small></td>
           <td>
             <a href="{{ h.url_for('vocabulary_services.terms', id=service.id) }}">View terms</a>
           </td>
@@ -99,6 +112,14 @@
             <a href="{{ h.url_for('vocabulary_services.index', id=service.id) }}" class="btn btn-sm btn-primary">Edit</a>
             <a href="{{ h.url_for('vocabulary_services.delete', id=service.id) }}" data-module="confirm-action" data-module-content="Are you sure you want to delete this vocabulary service and its terms?" class="btn btn-sm btn-danger">Delete</a>
           </td>
+        </tr>
+        <tr class="{{ 'even' if loop.index % 2 == 0 else 'odd' }}">
+            <td colspan="5"><small>
+                <details>
+                    <summary>URI</summary>
+                    URI: {{ service.uri }}
+                </details>
+            </small></td>
         </tr>
         {% endfor %}
       </tbody>
