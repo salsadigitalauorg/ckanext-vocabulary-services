@@ -35,6 +35,7 @@ class VocabularyServicesPlugin(plugins.SingletonPlugin):
             'get_vocabulary_service': get.vocabulary_service,
             'get_vocabulary_service_terms': get.vocabulary_service_terms,
             'get_csiro_vocabulary_terms': get.csiro_vocabulary_terms,
+            'get_remote_csv_vocabulary_terms': get.remote_csv_vocabulary_terms,
             'get_vocprez_vocabulary_terms': get.vocprez_vocabulary_terms,
             'vocabulary_service_create': create.vocabulary_service_create,
             'vocabulary_service_edit': update.vocabulary_service_edit,

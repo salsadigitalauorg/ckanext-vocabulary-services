@@ -90,6 +90,8 @@ def refresh(id):
             action = 'get_csiro_vocabulary_terms'
         elif service.type == 'vocprez':
             action = 'get_vocprez_vocabulary_terms'
+        elif service.type == 'ckan_csv':
+            action = 'get_remote_csv_vocabulary_terms'
 
         if action:
             if get_action(action)({}, data_dict):
