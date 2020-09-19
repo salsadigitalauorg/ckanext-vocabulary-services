@@ -96,7 +96,10 @@ def refresh(id):
         if action:
             if get_action(action)({}, data_dict):
                 get_action('update_vocabulary_service_last_processed')({}, service.id)
-                h.flash_success('Terms in vocabulary refreshed')
+                h.flash_success(
+                    'Terms in vocabulary refreshed. <a href="{}">View terms</a>'.format(h.url_for('vocabulary_services.terms', id=service.id)),
+                    allow_html=True
+                )
         else:
             h.flash_error('Vocabulary service type %s not currently implemented.' % service.type)
 
@@ -109,6 +112,7 @@ def terms(id):
 
     return toolkit.render('vocabulary/terms.html',
                           extra_vars={
+                              'vocabulary_service': get_action('get_vocabulary_service')({}, id),
                               'terms': get_action('get_vocabulary_service_terms')({}, id),
                           })
 
