@@ -1,8 +1,11 @@
 import logging
 import requests
+import csv
+import codecs
 
 from ckan.plugins.toolkit import get_action
 from ckanext.vocabulary_services import helpers, model
+from pprint import pformat
 
 log = logging.getLogger(__name__)
 
@@ -135,6 +138,44 @@ def vocprez_vocabulary_terms(context, data_dict):
 
         except Exception as e:
             log.error('>>> ERROR Attempting to fetch vocabulary from VocPrez service')
+            log.error(str(e))
+
+    return False
+
+
+def remote_csv_vocabulary_terms(context, data_dict):
+    log.debug('>>> Attempting to fetch vocabulary from CKAN CSV...')
+
+    service_id = data_dict.get('id', None)
+    service_uri = data_dict.get('uri', None)
+
+    if service_id and service_uri:
+        try:
+            r = requests.get(service_uri)
+
+            log.debug('>>> Request status code: %s' % r.status_code)
+
+            if r.status_code == 200:
+                log.debug('>>> Finished fetching vocabulary from CKAN CSV.')
+
+                response = r.iter_lines()
+                reader = csv.DictReader(codecs.iterdecode(response, 'utf-8'))
+                rows = list(reader)
+
+                for index in range(len(rows)):
+                    label = rows[index].get('label')
+                    uri = rows[index].get('uri')
+                    if uri and label:
+                        # Create the term in the internal vocabulary service
+                        get_action('vocabulary_service_term_upsert')(context, {
+                            'vocabulary_service_id': service_id,
+                            'label': label,
+                            'uri': uri,
+                        })
+                return True
+
+        except Exception as e:
+            log.error('>>> ERROR attempting to fetch vocabulary from CKAN CSV')
             log.error(str(e))
 
     return False

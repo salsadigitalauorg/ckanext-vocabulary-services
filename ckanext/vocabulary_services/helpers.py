@@ -9,8 +9,7 @@ log = logging.getLogger(__name__)
 
 def get_vocabulary_service_types():
     return [
-        {'text': 'CKAN CSV Resource', 'value': 'ckan_csv'},
-        {'text': 'GitHub CSV', 'value': 'github_csv'},
+        {'text': 'Remote CSV file', 'value': 'remote_csv'},
         {'text': 'GSQ VocPrez', 'value': 'vocprez'},
         {'text': 'CSIRO Linked Data Registry', 'value': 'csiro'},
     ]

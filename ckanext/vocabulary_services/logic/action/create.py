@@ -1,5 +1,6 @@
 from ckanext.vocabulary_services.model import VocabularyService, VocabularyServiceTerm
 from ckanext.vocabulary_services import helpers, validator
+from datetime import datetime
 
 
 def vocabulary_service_create(context, data_dict):
@@ -62,6 +63,7 @@ def vocabulary_service_term_upsert(context, data_dict):
                 # Update the term
                 existing_term.label = label
                 existing_term.uri = uri
+                existing_term.date_modified = datetime.utcnow()
 
                 session.add(existing_term)
                 session.commit()
