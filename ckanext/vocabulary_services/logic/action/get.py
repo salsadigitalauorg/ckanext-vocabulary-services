@@ -179,3 +179,20 @@ def remote_csv_vocabulary_terms(context, data_dict):
             log.error(str(e))
 
     return False
+
+def vocabulary_service_term_search(context, search_dict):
+    vocab_service = vocabulary_service(context, search_dict['term_name'])
+    if not vocab_service:
+        return None
+
+    cls = model.VocabularyServiceTerm
+    result = cls.Session.query(cls).filter(cls.vocabulary_service_id == vocab_service.id).filter(
+        cls.label.contains(search_dict['q'])).limit(search_dict['limit']).all()
+    if not result:
+        return None
+
+    data = []
+    for item in result:
+        data.append({'value': item.uri, 'name': item.label})
+
+    return data
