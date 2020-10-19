@@ -81,6 +81,7 @@ setup(
     entry_points='''
         [ckan.plugins]
         vocabulary_services=ckanext.vocabulary_services.plugin:VocabularyServicesPlugin
+        secure_vocabularies=ckanext.vocabulary_services.secure.plugin:SecureVocabulariesPlugin
 
         [paste.paster_command]
         initdb = ckanext.vocabulary_services.command:InitDBCommand

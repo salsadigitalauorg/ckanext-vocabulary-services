@@ -1,0 +1,25 @@
+[
+  {
+    "name": "point-of-contact",
+    "title": "Point of Contact",
+    "filename": "point-of-contact.csv",
+    "listable": false,
+    "fields": [
+      "label",
+      "uri",
+      "name"
+    ],
+    "lookup_field": "name",
+    "display_fields": [
+      "label",
+      "uri",
+      "name"
+    ]
+  },
+  {
+    "name": "creator",
+    "title": "Creator",
+    "filename": "creator.csv",
+    "listable": true
+  }
+]
