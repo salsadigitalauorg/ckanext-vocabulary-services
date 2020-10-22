@@ -6,6 +6,8 @@ import logging
 from ckan.common import request
 from ckanext.vocabulary_services import helpers
 from flask import Blueprint
+from ckan.views.api import _finish_ok
+from pprint import pformat
 
 clean_dict = logic.clean_dict
 get_action = toolkit.get_action
@@ -132,8 +134,24 @@ def delete(id):
 
     return h.redirect_to('vocabulary_services.index')
 
+def vocabulary_service_term_autocomplete(term_name):
+    q = request.args.get('incomplete', '')
+    limit = request.args.get('limit', 5)
+    search_dict = {'term_name': term_name, 'q': q, 'limit': limit}
+
+    if not q:
+        return _finish_ok({})
+
+    result = get_action('vocabulary_service_term_search')({}, search_dict)
+    if not result:
+        return _finish_ok({})
+
+    result_set = {'ResultSet': {u'Result': result}}
+
+    return _finish_ok(result_set)
 
 vocabulary_services.add_url_rule(u'/vocabulary-services', methods=[u'GET', u'POST'], view_func=index)
 vocabulary_services.add_url_rule(u'/vocabulary-service/refresh/<id>', view_func=refresh)
 vocabulary_services.add_url_rule(u'/vocabulary-service/terms/<id>', view_func=terms)
 vocabulary_services.add_url_rule(u'/vocabulary-service/delete/<id>', methods=[u'POST'], view_func=delete)
+vocabulary_services.add_url_rule(u'/vocabulary-service/term-autocomplete/<term_name>', view_func=vocabulary_service_term_autocomplete)
