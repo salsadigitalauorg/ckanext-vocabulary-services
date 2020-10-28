@@ -23,6 +23,8 @@ vocabulary_service_table = Table('vocabulary_service', meta.metadata,
                                         nullable=False),
                                  Column('update_frequency', types.UnicodeText,
                                         nullable=False),
+                                 Column('allow_duplicate_terms', types.Boolean,
+                                        default=False),
                                  Column('date_created', types.DateTime,
                                         default=datetime.datetime.utcnow()),
                                  Column('date_modified', types.DateTime,
@@ -51,12 +53,13 @@ class VocabularyService(DomainObject):
     """A VocabularyService object represents an external vocabulary
     used for populating and controlling a metadata schema field"""
 
-    def __init__(self, type=None, title=None, name=None, uri=None, update_frequency=None):
+    def __init__(self, type=None, title=None, name=None, uri=None, update_frequency=None, allow_duplicate_terms=False):
         self.type = type
         self.title = title
         self.name = name
         self.uri = uri
         self.update_frequency = update_frequency
+        self.allow_duplicate_terms = allow_duplicate_terms
 
     @classmethod
     def get(cls, reference):
@@ -88,6 +91,12 @@ class VocabularyService(DomainObject):
         query = meta.Session.query(cls)
         return query.filter(func.lower(cls.name) == func.lower(name)).all()
 
+    @classmethod
+    def is_allow_duplicate_terms(cls, reference):
+        '''Return True if allow_duplicate_terms'''
+        query = meta.Session.query(cls)
+        return query.filter(cls.allow_duplicate_terms == True).filter(cls.id == reference).first() is not None
+
 class VocabularyServiceTerm(DomainObject):
     """A VocabularyServiceTerm object represents a term from an external vocabulary
     used for populating and controlling a metadata schema field"""
@@ -111,6 +120,16 @@ class VocabularyServiceTerm(DomainObject):
         query = meta.Session.query(cls)\
             .filter(cls.vocabulary_service_id == vocabulary_service_id)\
             .filter(or_(cls.label == label, cls.uri == uri))
+        vocabulary_service_term = query.first()
+
+        return vocabulary_service_term
+
+    @classmethod
+    def get_by_uri(cls, vocabulary_service_id, uri):
+        '''Returns a VocabularyServiceTerm object referenced by its uri.'''
+        query = meta.Session.query(cls)\
+            .filter(cls.vocabulary_service_id == vocabulary_service_id)\
+            .filter(cls.uri == uri)
         vocabulary_service_term = query.first()
 
         return vocabulary_service_term
