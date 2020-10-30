@@ -5,9 +5,7 @@
 {% block primary_content_inner %}
     <h1>Secure vocabularies</h1>
 
-    {{ h.get_secure_vocabulary_record('point-of-contact', 'iri') }}
-
-    {% for vocabulary in config %}
+    {% for vocabulary in config if vocabulary.enable_upload %}
         <h2>{{ vocabulary.title }}</h2>
 
         <form method="post" enctype="multipart/form-data">

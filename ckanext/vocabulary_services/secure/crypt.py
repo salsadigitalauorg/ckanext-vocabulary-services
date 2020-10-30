@@ -69,37 +69,6 @@ def decrypted_csv_data(filename, key):
         log.error(str(e))
 
 
-def search_encrypted_file(keyword, filename, key):
-    """
-    Given a filename (str) and key (bytes), it decrypts the file and write it
-    """
-    f = Fernet(key)
-    with open(filename, "rb") as file:
-        # read the encrypted data
-        encrypted_data = file.read()
-    # decrypt data
-    decrypted_data = f.decrypt(encrypted_data)
-
-    print(keyword)
-
-    keyword = keyword.lower()
-
-    lines = decrypted_data.decode('utf-8').splitlines()
-
-    results = []
-
-    for line in csv.reader(lines):
-        print(line)
-        # [0] = label
-        # [2] = definition
-        if keyword in line[0].lower():
-            results.append({'label': '{0} - {1}'.format(line[0], line[2]), 'uri': line[1]})
-        elif keyword in line[2].lower():
-            results.append({'label': '{0} - {1}'.format(line[0], line[2]), 'uri': line[1]})
-
-    print(results)
-
-
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description="Simple File Encryptor Script")
@@ -110,10 +79,6 @@ if __name__ == "__main__":
                         help="Whether to encrypt the file, only -e or -d can be specified.")
     parser.add_argument("-d", "--decrypt", action="store_true",
                         help="Whether to decrypt the file, only -e or -d can be specified.")
-    parser.add_argument("-s", "--search", action="store_true",
-                        help="Search an encrypted file. Must include the -k argument too.")
-    parser.add_argument("-k", "--keyword", action="store_true",
-                        help="Keyword to be searched. Must include the -s argument too.")
 
     args = parser.parse_args()
     file = args.file
@@ -126,8 +91,6 @@ if __name__ == "__main__":
 
     encrypt_ = args.encrypt
     decrypt_ = args.decrypt
-    search = args.search
-    keyword = args.keyword
 
     if encrypt_ and decrypt_:
         raise TypeError("Please specify whether you want to encrypt the file or decrypt it.")
@@ -135,7 +98,5 @@ if __name__ == "__main__":
         encrypt(file, key)
     elif decrypt_:
         decrypt(file, key)
-    elif search:
-        search_encrypted_file('ng', file, key)
     else:
         raise TypeError("Please specify whether you want to encrypt the file or decrypt it.")

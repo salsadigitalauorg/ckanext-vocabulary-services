@@ -2,6 +2,8 @@ import ckan.lib.navl.dictization_functions as dict_fns
 import ckan.lib.uploader as uploader
 import logging
 import os
+import ckan.plugins.toolkit as toolkit
+import mimetypes
 
 from ckan.common import request
 from ckan.logic import clean_dict, parse_params, tuplize_dict
@@ -9,6 +11,7 @@ from ckan.plugins.toolkit import h, render
 from ckanext.vocabulary_services import helpers as vocabulary_services_helpers
 from ckanext.vocabulary_services.secure import crypt, helpers
 from flask import Blueprint
+from ckan.views.api import _finish_ok
 
 log = logging.getLogger(__name__)
 
@@ -34,8 +37,15 @@ def secure_upload():
 
             upload = uploader.get_uploader('secure_csv')
             upload.update_data_dict(data_dict, None, 'file_upload', None)
-            # @TODO: Make this configurable? The default for the upload.upload method is 2MB
-            upload.upload(10)
+
+            # Check The file format is CSV
+            # TODO: Check the CSV file has the correct header, compare with the fields in config
+            if upload.upload_field_storage.mimetype != 'text/csv':
+                log.debug('Secure upload file mimetype {0} for {1}'.format(upload.upload_field_storage.mimetype, upload.filename))
+                raise Exception('Invalid file type "{}". Only "text/csv" files are allowed'.format(upload.upload_field_storage.mimetype))
+
+            max_file_upload_size = int(toolkit.config.get('ckanext.secure_vocabularies.max_file_upload_size', 10))
+            upload.upload(max_file_upload_size)
 
             filename = data_dict.get('filename', None)
 
@@ -44,10 +54,6 @@ def secure_upload():
                 uploaded_filepath = upload.filepath
 
                 filepath = os.path.join(storage_path, filename)
-
-                # @TODO: Need to do some validation of the file here before we destroy the existing file, eg.
-                # The file format is CSV
-                # The CSV file has the correct header row
 
                 # Delete any existing point-of-contact.csv file
                 try:
@@ -60,7 +66,8 @@ def secure_upload():
 
                 # Encrypt the file
                 # @TODO: Load the key from environment variable set via Lagoon GraphQL API
-                crypt.encrypt(filepath, crypt.load_key())
+                # @TODO: For now there is no encryption required until the client verifies what encryption is required
+                # crypt.encrypt(filepath, crypt.load_key())
 
                 # @TODO: Remove the temporary file? I don't know if it exists, or if we can?
 
@@ -77,5 +84,29 @@ def secure_upload():
                   })
 
 
+def secure_vocabulary_search(vocabulary_name):
+    try:
+        toolkit.check_access(u'package_create', {})
+    except toolkit.NotAuthorized:
+        toolkit.abort(403, toolkit._('Not authorized'))
+
+    query = request.args.get('incomplete', '')
+    limit = request.args.get('limit', 10)
+    search_dict = {'vocabulary_name': vocabulary_name, 'query': query, 'limit': limit}
+
+    if not query:
+        return _finish_ok({})
+
+    result = toolkit.get_action('get_secure_vocabulary_search')({}, search_dict)
+    if not result:
+        return _finish_ok({})
+
+    result_set = {'ResultSet': {u'Result': result}}
+
+    return _finish_ok(result_set)
+
+
 secure_vocabulary_services.add_url_rule(u'/vocabulary-services/secure', methods=[u'GET', u'POST'],
                                         view_func=secure_upload)
+secure_vocabulary_services.add_url_rule(u'/vocabulary-services/secure-autocomplete/<vocabulary_name>', methods=[u'GET', u'POST'],
+                                        view_func=secure_vocabulary_search)

@@ -3,23 +3,51 @@
     "name": "point-of-contact",
     "title": "Point of Contact",
     "filename": "point-of-contact.csv",
+    "enable_upload": true,
     "listable": false,
     "fields": [
-      "label",
-      "uri",
-      "name"
+      "PositionID",
+      "Functional Position",
+      "Email",
+      "Name"
     ],
-    "lookup_field": "name",
+    "lookup_field": "PositionID",
     "display_fields": [
-      "label",
-      "uri",
-      "name"
-    ]
+      "Functional Position",
+      "Name",
+      "Email"
+    ],
+    "search_fields": [
+      "Functional Position",
+      "Name"
+    ],
+    "search_display_fields": {
+      "value": "{PositionID}",
+      "name": "{Name} - {Functional Position}"
+    }
   },
   {
     "name": "creator",
     "title": "Creator",
-    "filename": "creator.csv",
-    "listable": true
+    "filename": "point-of-contact.csv",
+    "enable_upload": false,
+    "fields": [
+      "PositionID",
+      "Functional Position",
+      "Email",
+      "Name"
+    ],
+    "display_fields": [
+      "Functional Position",
+      "Name"
+    ],
+    "search_fields": [
+      "Functional Position",
+      "Name"
+    ],
+    "search_display_fields": {
+      "value": "{Name} - {Functional Position}",
+      "name": "{Name} - {Functional Position}"
+    }
   }
 ]

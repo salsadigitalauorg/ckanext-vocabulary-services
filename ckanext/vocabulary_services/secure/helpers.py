@@ -1,8 +1,10 @@
 import json
 import os
+import logging
 
-from ckan.common import config
-from ckan.plugins.toolkit import abort, get_action
+from ckan.plugins.toolkit import abort, get_action, config
+
+log = logging.getLogger(__name__)
 
 
 def load_secure_vocabularies_config():
@@ -10,9 +12,8 @@ def load_secure_vocabularies_config():
     Load some config info from a json file
     """
     try:
-        # @TODO: Get the filepath from the CKAN .ini file
-        # path = config.get('ckan.workflow.json_config', '/usr/lib/ckan/default/src/ckanext-workflow/ckanext/workflow/example.settings.json')
-        with open('/app/src/ckanext-vocabulary-services/ckanext/vocabulary_services/secure/secure_vocabularies.json') as json_data:
+        json_config = config.get('ckanext.secure_vocabularies.json_config')
+        with open(json_config) as json_data:
             d = json.load(json_data)
             return d
     except Exception as e:
@@ -33,10 +34,23 @@ def get_secure_filepath(filename):
         # Because we are using the standard CKAN uploader class - "storage/uploads" is the path
         'storage',
         'uploads',
-        config.get('ckan.vocabulary_services.secure_dir', 'secure_csv'),
+        config.get('ckanext.secure_vocabularies.secure_dir', 'secure_csv'),
         filename
     )
 
 
 def get_secure_vocabulary_record(vocabulary_name, query):
-    return get_action('get_secure_vocabulary_record')({}, {'vocabulary_name': vocabulary_name, 'query': query})
+    if get_secure_vocabulary_lookup_field(vocabulary_name):
+        return get_action('get_secure_vocabulary_record')({}, {'vocabulary_name': vocabulary_name, 'query': query})
+
+
+def get_secure_vocabulary_record_label(vocabulary_name, query):
+    if get_secure_vocabulary_lookup_field(vocabulary_name):
+        secure_vocabulary_record = get_secure_vocabulary_record(vocabulary_name, query)
+        search_display_fields = load_secure_vocabulary_config(vocabulary_name).get('search_display_fields', {})
+        return search_display_fields.get('name', '').format(**secure_vocabulary_record)
+
+
+def get_secure_vocabulary_lookup_field(vocabulary_name):
+    secure_vocabulary_config = load_secure_vocabulary_config(vocabulary_name)
+    return secure_vocabulary_config.get('lookup_field', False)

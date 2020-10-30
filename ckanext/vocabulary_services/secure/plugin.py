@@ -20,7 +20,8 @@ class SecureVocabulariesPlugin(plugins.SingletonPlugin):
     def get_actions(self):
         return {
             'get_secure_vocabulary_record': get.secure_vocabulary_record,
-        } #get_secure_vocabulary_record
+            'get_secure_vocabulary_search': get.secure_vocabulary_search
+        }
 
     # IBlueprint
 
@@ -37,4 +38,6 @@ class SecureVocabulariesPlugin(plugins.SingletonPlugin):
     def get_helpers(self):
         return {
             'get_secure_vocabulary_record': helpers.get_secure_vocabulary_record,
+            'get_secure_vocabulary_record_label': helpers.get_secure_vocabulary_record_label,
+            'get_secure_vocabulary_lookup_field': helpers.get_secure_vocabulary_lookup_field
         }
