@@ -13,7 +13,7 @@ def secure_vocabulary_record(context, data_dict):
     if not authz.auth_is_loggedin_user():
         return {'success': False, 'msg': toolkit._('Not authorized')}
 
-    result = []
+    result = {}
     vocabulary_name = data_dict.get('vocabulary_name', None)
     query = data_dict.get('query', '').lower()
 

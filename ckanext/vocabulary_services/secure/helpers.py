@@ -45,10 +45,15 @@ def get_secure_vocabulary_record(vocabulary_name, query):
 
 
 def get_secure_vocabulary_record_label(vocabulary_name, query):
+    # Query could be a free text value and will not be found in the get_secure_vocabulary_record lookup
+    label = query
     if get_secure_vocabulary_lookup_field(vocabulary_name):
         secure_vocabulary_record = get_secure_vocabulary_record(vocabulary_name, query)
-        search_display_fields = load_secure_vocabulary_config(vocabulary_name).get('search_display_fields', {})
-        return search_display_fields.get('name', '').format(**secure_vocabulary_record)
+        if secure_vocabulary_record:
+            search_display_fields = load_secure_vocabulary_config(vocabulary_name).get('search_display_fields', {})
+            label = search_display_fields.get('name', '').format(**secure_vocabulary_record)
+
+    return label
 
 
 def get_secure_vocabulary_lookup_field(vocabulary_name):
