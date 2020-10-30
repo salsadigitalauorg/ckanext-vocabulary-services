@@ -10,7 +10,7 @@ log = logging.getLogger(__name__)
 
 
 def secure_vocabulary_record(context, data_dict):
-    if not authz.auth_is_loggedin_user():
+    if authz.auth_is_anon_user(context):
         return {'success': False, 'msg': toolkit._('Not authorized')}
 
     result = {}
@@ -40,8 +40,6 @@ def secure_vocabulary_record(context, data_dict):
                 if row[lookup_field] == query:
                     result = {field: row[field] for field in display_fields}
                     break
-
-            log.debug('result: {}'.format(result))
 
     except Exception as e:
         log.error(e)
@@ -93,8 +91,6 @@ def secure_vocabulary_search(context, data_dict):
                             results.append(result_dict)
                             # Row has been added to results so move onto the next row
                             break
-
-            log.debug('results: {}'.format(results))
 
     except Exception as e:
         log.error(e)
