@@ -1,0 +1,29 @@
+{% extends "admin/base.html" %}
+
+{% import 'macros/form.html' as form %}
+
+{% block primary_content_inner %}
+    <h1>Secure vocabularies</h1>
+
+    {% for vocabulary in config if vocabulary.enable_upload %}
+        <h2>{{ vocabulary.title }}</h2>
+
+        <form method="post" enctype="multipart/form-data">
+            <div class="form-group control-full">
+                <label class="control-label" for="field-{{ vocabulary.name }}-upload">File</label>
+                <div class="controls">
+                    <input type="file" id="field-{{ vocabulary.name }}-upload" name="file_upload" value="" placeholder="" class="form-control" title="Upload a file from your computer">
+                </div>
+            </div>
+
+            <input type="hidden" name="filename" value="{{ vocabulary.filename }}" />
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary" name="save">{{ _('Upload ' + vocabulary.title + ' CSV') }}</button>
+            </div>
+        </form>
+        <hr />
+    {% endfor %}
+{% endblock %}
+
+{% block secondary_content %}{% endblock %}

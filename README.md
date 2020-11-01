@@ -23,3 +23,18 @@ A cron job needs to be set up to refresh the vocabulary sevices periodically bas
 
     ckan -c path/to/ckan.ini vocabulary-services-refresh
 
+## Secure Vocabularies
+
+A secure vocabulary is an ecnrypted CSV that is not stored in the `vocabulary_service` or `vocabulary_service_term`
+database tables.
+
+To enable secure vocabularies, enable the `secure_vocabularies` plugin in CKAN `.ini` file, e.g.
+   
+    ckan.plugins = ... secure_vocabularies ...
+    
+You must also specify a path to a secure vocabulary configuration file, i.e.
+
+    ckan.vocabulary_services.configuration_file = /etc/ckan/default/secure_vocabularies.json
+
+... to be continued ...
+
