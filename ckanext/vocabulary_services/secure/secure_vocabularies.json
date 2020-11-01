@@ -1,0 +1,82 @@
+[
+  {
+    "name": "point-of-contact",
+    "title": "Point of Contact",
+    "filename": "point-of-contact.csv",
+    "enable_upload": true,
+    "listable": false,
+    "fields": [
+      "PositionID",
+      "Functional Position",
+      "Email",
+      "Name"
+    ],
+    "lookup_field": "PositionID",
+    "display_fields": [
+      "Functional Position",
+      "Name",
+      "Email"
+    ],
+    "search_fields": [
+      "Functional Position",
+      "Name"
+    ],
+    "search_display_fields": {
+      "value": "{PositionID}",
+      "name": "{Name} - {Functional Position}"
+    }
+  },
+  {
+    "name": "creator",
+    "title": "Creator",
+    "filename": "point-of-contact.csv",
+    "enable_upload": false,
+    "fields": [
+      "PositionID",
+      "Functional Position",
+      "Email",
+      "Name"
+    ],
+    "display_fields": [
+      "Functional Position",
+      "Name"
+    ],
+    "search_fields": [
+      "Functional Position",
+      "Name"
+    ],
+    "search_display_fields": {
+      "value": "{Name} - {Functional Position}",
+      "name": "{Name} - {Functional Position}"
+    }
+  },
+  {
+    "name": "the-party",
+    "title": "The Party",
+    "filename": "the-party.csv",
+    "enable_upload": true,
+    "lookup_field": "PositionID",
+    "fields": [
+      "PositionID",
+      "Functional Position",
+      "Name",
+      "Email",
+      "Organisation"
+    ],
+    "display_fields": [
+      "Name",
+      "Functional Position",
+      "Organisation",
+      "Email"
+    ],
+    "search_fields": [
+      "Name",
+      "Functional Position",
+      "Organisation"
+    ],
+    "search_display_fields": {
+      "value": "{PositionID}",
+      "name": "{Name} - {Functional Position} - {Organisation}"
+    }
+  }
+]
