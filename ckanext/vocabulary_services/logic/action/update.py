@@ -4,6 +4,7 @@ from ckan.plugins.toolkit import get_action
 from ckanext.vocabulary_services.model import VocabularyService, VocabularyServiceTerm
 from ckanext.vocabulary_services import helpers, validator
 from datetime import datetime
+from pprint import pformat
 
 log = logging.getLogger(__name__)
 
@@ -53,6 +54,12 @@ def vocabulary_service_edit(context, data_dict):
     Edit vocabulary service.
     """
     helpers.check_access(context)
+
+    # Set the allow duplicate items value.
+    if not 'allow_duplicate_terms' in data_dict:
+        data_dict['allow_duplicate_terms'] = False
+    else:
+        data_dict['allow_duplicate_terms'] = True
 
     # Load vocabulary service.
     vocabulary_service = VocabularyService.get(data_dict['id'])

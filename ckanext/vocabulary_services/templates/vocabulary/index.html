@@ -59,6 +59,16 @@
         is_required=True
     ) }}
 
+    {{ form.checkbox(
+        'allow_duplicate_terms',
+        id='field-allow-duplicate_terms',
+        label=_('Allow duplicate terms'),
+        value=True,
+        checked="checked" if data.allow_duplicate_terms else "",
+        error=errors.allow_duplicate_terms,
+        classes=['control-medium']
+    ) }}
+
     {% if is_update %}
         {{ form.hidden('id', value=data.id) }}
     {% endif %}
@@ -96,17 +106,19 @@
         <th>Name</th>
         <th width="8%">Type</th>
         <th width="12%">Terms</th>
+        <th width="12%">Duplicate Terms</th>
         <th width="25%">Actions</th>
       </thead>
       <tbody>
         {% for service in services %}
         <tr class="{{ 'even' if loop.index % 2 == 0 else 'odd' }}">
-            <td><strong>{{ service.title }}</strong></td>
+          <td><strong>{{ service.title }}</strong></td>
           <td>{{ service.name }}</td>
             <td><small>{{ service.type }}</small></td>
           <td>
             <a href="{{ h.url_for('vocabulary_services.terms', id=service.id) }}">View terms</a>
           </td>
+          <td>{{ "Yes" if service.allow_duplicate_terms else "No" }}</td>
           <td>
             <a href="{{ h.url_for('vocabulary_services.refresh', id=service.id) }}" class="btn btn-sm btn-warning">Refresh</a>
             <a href="{{ h.url_for('vocabulary_services.index', id=service.id) }}" class="btn btn-sm btn-primary">Edit</a>
