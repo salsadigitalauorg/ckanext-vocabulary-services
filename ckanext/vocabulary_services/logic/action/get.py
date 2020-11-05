@@ -169,7 +169,7 @@ def remote_csv_vocabulary_terms(context, data_dict):
                 for index in range(len(rows)):
                     label = rows[index].get('label')
                     uri = rows[index].get('uri')
-                    definition = rows[index].get('definition')
+                    definition = rows[index].get('definition', None)
                     if uri and label:
                         # Create the term in the internal vocabulary service
                         get_action('vocabulary_service_term_upsert')(context, {
