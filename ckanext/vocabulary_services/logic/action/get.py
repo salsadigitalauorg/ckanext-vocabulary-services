@@ -78,12 +78,14 @@ def csiro_vocabulary_terms(context, data_dict):
                         term = response['@graph'][i]
                         uri = term.get('@id', None)
                         label = term.get('rdfs:label', None)
+                        definition = term.get('dct:definition', None) or term.get('dct:description', None)
                         if uri and label:
                             # Create the term in the internal vocabulary service
                             get_action('vocabulary_service_term_upsert')(context, {
                                 'vocabulary_service_id': service_id,
                                 'label': label,
                                 'uri': uri,
+                                'definition': definition
                             })
                 return True
 
@@ -127,12 +129,14 @@ def vocprez_vocabulary_terms(context, data_dict):
                         log.debug(binding)
                         concept = binding.get('concept', None)
                         pref_label = binding.get('prefLabel', None)
+                        definition = binding.get('definition', {})
                         if concept and pref_label:
                             # Create the term in the internal vocabulary service
                             get_action('vocabulary_service_term_upsert')(context, {
                                 'vocabulary_service_id': service_id,
                                 'label': pref_label['value'],
                                 'uri': concept['value'],
+                                'definition': definition.get('value', None)
                             })
                     return True
 
@@ -165,12 +169,14 @@ def remote_csv_vocabulary_terms(context, data_dict):
                 for index in range(len(rows)):
                     label = rows[index].get('label')
                     uri = rows[index].get('uri')
+                    definition = rows[index].get('definition')
                     if uri and label:
                         # Create the term in the internal vocabulary service
                         get_action('vocabulary_service_term_upsert')(context, {
                             'vocabulary_service_id': service_id,
                             'label': label,
                             'uri': uri,
+                            'definition': definition
                         })
                 return True
 

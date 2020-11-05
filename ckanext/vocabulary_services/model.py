@@ -99,14 +99,16 @@ class VocabularyService(DomainObject):
         query = meta.Session.query(cls)
         return query.filter(cls.allow_duplicate_terms == True).filter(cls.id == reference).first() is not None
 
+
 class VocabularyServiceTerm(DomainObject):
     """A VocabularyServiceTerm object represents a term from an external vocabulary
     used for populating and controlling a metadata schema field"""
 
-    def __init__(self, vocabulary_service_id=None, label=None, uri=None):
+    def __init__(self, vocabulary_service_id=None, label=None, uri=None, definition=None):
         self.vocabulary_service_id = vocabulary_service_id
         self.label = label
         self.uri = uri
+        self.definition = definition
 
     @classmethod
     def get(cls, reference):
