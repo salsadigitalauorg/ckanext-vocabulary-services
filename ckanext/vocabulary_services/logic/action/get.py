@@ -78,7 +78,7 @@ def csiro_vocabulary_terms(context, data_dict):
                         term = response['@graph'][i]
                         uri = term.get('@id', None)
                         label = term.get('rdfs:label', None)
-                        definition = term.get('dct:definition', None) or term.get('dct:description', None)
+                        definition = term.get('skos:definition', None) or term.get('dct:description', None)
                         if uri and label:
                             # Create the term in the internal vocabulary service
                             get_action('vocabulary_service_term_upsert')(context, {
