@@ -204,6 +204,6 @@ def vocabulary_service_term_search(context, search_dict):
         if result:
             data = []
             for item in result:
-                data.append({'value': item.uri, 'name': item.label})
+                data.append({'value': item.uri, 'name': item.label, 'title': item.definition})
 
             return data
