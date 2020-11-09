@@ -33,7 +33,7 @@ def scheming_vocabulary_service_choices(field):
     if vocabulary_service_name:
         try:
             for term in get_action('get_vocabulary_service_terms')({}, vocabulary_service_name):
-                choices.append({'value': term.uri, 'label': term.label})
+                choices.append({'value': term.uri, 'label': term.label, 'title': term.definition})
         except Exception as e:
             log.error(str(e))
 
