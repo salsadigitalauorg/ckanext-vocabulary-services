@@ -74,7 +74,7 @@
     {% endif %}
 
     <div class="form-actions">
-        <button class="btn btn-primary" type="submit">{{ _('Update') if is_update else _('Add') }}</button>
+        <button class="btn btn-primary" type="submit">{{ _('Update') if is_update else _('Add vocabulary service') }}</button>
     </div>
 
   </form>
@@ -103,32 +103,38 @@
     <table class="table vocabs">
       <thead>
         <th width="35%">Title</th>
-        <th>Name</th>
-        <th width="8%">Type</th>
         <th width="12%">Terms</th>
-        <th width="12%">Duplicate Terms</th>
         <th width="25%">Actions</th>
       </thead>
       <tbody>
         {% for service in services %}
         <tr class="{{ 'even' if loop.index % 2 == 0 else 'odd' }}">
-          <td><strong>{{ service.title }}</strong></td>
-          <td>{{ service.name }}</td>
-            <td><small>{{ service.type }}</small></td>
+          <td>
+              <strong>
+                  <a title="Click to view terms" href="{{ h.url_for('vocabulary_services.terms', id=service.id) }}">{{ service.title }}</a>
+              </strong>
+              <br />
+              <small>
+                  <strong>Name:</strong> {{ service.name }}
+                  <br />
+                  <strong>Allow duplicate terms:</strong> {{ "Yes" if service.allow_duplicate_terms else "No" }}
+              </small>
+              <br />
+              <span class="label label-{% if service.type == 'csiro' %}primary{% elif service.type == 'vocprez' %}success{% else %}default{% endif %}">{{ service.type }}</span>
+          </td>
           <td>
             <a href="{{ h.url_for('vocabulary_services.terms', id=service.id) }}">View terms</a>
           </td>
-          <td>{{ "Yes" if service.allow_duplicate_terms else "No" }}</td>
           <td>
             <a href="{{ h.url_for('vocabulary_services.refresh', id=service.id) }}" class="btn btn-sm btn-warning">Refresh</a>
             <a href="{{ h.url_for('vocabulary_services.index', id=service.id) }}" class="btn btn-sm btn-primary">Edit</a>
-            <a href="{{ h.url_for('vocabulary_services.delete', id=service.id) }}" data-module="confirm-action" data-module-content="Are you sure you want to delete this vocabulary service and its terms?" class="btn btn-sm btn-danger">Delete</a>
+            <a href="{{ h.url_for('vocabulary_services.delete', id=service.id) }}" class="btn btn-sm btn-danger" data-module="confirm-action" data-module-content="Are you sure you want to delete this vocabulary service and its terms?">Delete</a>
           </td>
         </tr>
         <tr class="{{ 'even' if loop.index % 2 == 0 else 'odd' }}">
-            <td colspan="5"><small>
+            <td colspan="3"><small>
                 <details>
-                    <summary>URI</summary>
+                    <summary>URI <span style="color: #bbb">(click to display)</span></summary>
                     URI: {{ service.uri }}
                 </details>
             </small></td>
