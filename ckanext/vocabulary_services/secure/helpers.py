@@ -39,9 +39,9 @@ def get_secure_filepath(filename):
     )
 
 
-def get_secure_vocabulary_record(vocabulary_name, query):
+def get_secure_vocabulary_record(vocabulary_name, query, context={}):
     if get_secure_vocabulary_lookup_field(vocabulary_name):
-        return get_action('get_secure_vocabulary_record')({}, {'vocabulary_name': vocabulary_name, 'query': query})
+        return get_action('get_secure_vocabulary_record')(context, {'vocabulary_name': vocabulary_name, 'query': query})
 
 
 def get_secure_vocabulary_record_label(vocabulary_name, query):
