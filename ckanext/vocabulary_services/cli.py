@@ -41,6 +41,8 @@ def refresh_required(service):
             return True
         else:
             return False
+    elif service.update_frequency == 'never':
+        return False
 
 
 @click.command(u"vocabulary-services-refresh")

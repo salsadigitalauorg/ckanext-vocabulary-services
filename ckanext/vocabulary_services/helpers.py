@@ -20,6 +20,7 @@ def get_vocabulary_service_update_frequencies():
         {'text': 'Daily', 'value': 'daily'},
         {'text': 'Weekly', 'value': 'weekly'},
         {'text': 'Monthly', 'value': 'monthly'},
+        {'text': 'Never', 'value': 'never'},
     ]
 
 
