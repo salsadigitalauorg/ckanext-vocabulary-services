@@ -19,6 +19,9 @@
       <thead>
         <th>Label</th>
         <th>URI</th>
+        {% if vocabulary_service.is_hierarchical %}
+        <th>URI</th>
+        {% endif %}
         <th>Definition</th>
         <th>Created</th>
         <th>Updated</th>
@@ -28,6 +31,9 @@
         <tr>
           <td>{{ term.label }}</td>
           <td>{{ term.uri }}</td>
+          {% if vocabulary_service.is_hierarchical %}
+          <td>{{ term.broader }}</td>
+          {% endif %}
           <td>{{ term.definition }}</td>
           <td>{{ term.date_created }}</td>
           <td>{{ term.date_modified }}</td>

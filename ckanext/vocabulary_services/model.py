@@ -25,6 +25,8 @@ vocabulary_service_table = Table('vocabulary_service', meta.metadata,
                                         nullable=False),
                                  Column('allow_duplicate_terms', types.Boolean,
                                         default=False),
+                                 Column('is_hierarchical', types.Boolean,
+                                        default=False),
                                  Column('date_created', types.DateTime,
                                         default=datetime.datetime.utcnow()),
                                  Column('date_modified', types.DateTime,
@@ -42,6 +44,8 @@ vocabulary_service_term_table = Table('vocabulary_service_term', meta.metadata,
                                              nullable=False),
                                       Column('uri', types.UnicodeText,
                                              nullable=False),
+                                      Column('broader', types.UnicodeText,
+                                             nullable=True),
                                       Column('definition', types.UnicodeText,
                                              nullable=False),
                                       Column('date_created', types.DateTime,
@@ -55,13 +59,14 @@ class VocabularyService(DomainObject):
     """A VocabularyService object represents an external vocabulary
     used for populating and controlling a metadata schema field"""
 
-    def __init__(self, type=None, title=None, name=None, uri=None, update_frequency=None, allow_duplicate_terms=False):
+    def __init__(self, type=None, title=None, name=None, uri=None, update_frequency=None, allow_duplicate_terms=False, is_hierarchical=False):
         self.type = type
         self.title = title
         self.name = name
         self.uri = uri
         self.update_frequency = update_frequency
         self.allow_duplicate_terms = allow_duplicate_terms
+        self.is_hierarchical = is_hierarchical
 
     @classmethod
     def get(cls, reference):
@@ -104,10 +109,11 @@ class VocabularyServiceTerm(DomainObject):
     """A VocabularyServiceTerm object represents a term from an external vocabulary
     used for populating and controlling a metadata schema field"""
 
-    def __init__(self, vocabulary_service_id=None, label=None, uri=None, definition=None):
+    def __init__(self, vocabulary_service_id=None, label=None, uri=None, definition=None, broader=None):
         self.vocabulary_service_id = vocabulary_service_id
         self.label = label
         self.uri = uri
+        self.broader = broader
         self.definition = definition
 
     @classmethod

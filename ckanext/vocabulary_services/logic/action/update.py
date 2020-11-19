@@ -56,10 +56,8 @@ def vocabulary_service_edit(context, data_dict):
     helpers.check_access(context)
 
     # Set the allow duplicate items value.
-    if not 'allow_duplicate_terms' in data_dict:
-        data_dict['allow_duplicate_terms'] = False
-    else:
-        data_dict['allow_duplicate_terms'] = True
+    data_dict['allow_duplicate_terms'] = False if not 'allow_duplicate_terms' in data_dict else True
+    data_dict['is_hierarchical'] = False if not 'is_hierarchical' in data_dict else True
 
     # Load vocabulary service.
     vocabulary_service = VocabularyService.get(data_dict['id'])

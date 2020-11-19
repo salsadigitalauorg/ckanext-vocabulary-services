@@ -17,6 +17,7 @@ def vocabulary_service_create(context, data_dict):
     validator.validate_vocabulary_service(context, data_dict)
 
     allow_duplicate_terms = True if data_dict.get('allow_duplicate_terms') else False
+    is_hierarchical = True if data_dict.get('is_hierarchical') else False
 
     service = VocabularyService(
         type=data_dict.get('type', ''),
@@ -25,6 +26,7 @@ def vocabulary_service_create(context, data_dict):
         uri=data_dict.get('uri', ''),
         update_frequency=data_dict.get('update_frequency', ''),
         allow_duplicate_terms=allow_duplicate_terms,
+        is_hierarchical=is_hierarchical,
     )
 
     session.add(service)
