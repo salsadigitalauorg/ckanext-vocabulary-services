@@ -6,6 +6,7 @@ import codecs
 from ckan.plugins.toolkit import get_action
 from ckanext.vocabulary_services import helpers, model
 from pprint import pformat
+from sqlalchemy import or_
 
 log = logging.getLogger(__name__)
 
@@ -197,7 +198,7 @@ def vocabulary_service_term_search(context, search_dict):
         cls = model.VocabularyServiceTerm
         result = cls.Session.query(cls) \
             .filter(cls.vocabulary_service_id == vocab_service.id) \
-            .filter(cls.label.ilike(q)) \
+            .filter(or_(cls.label.ilike(q), cls.uri.ilike(q))) \
             .limit(search_dict['limit']) \
             .all()
 
