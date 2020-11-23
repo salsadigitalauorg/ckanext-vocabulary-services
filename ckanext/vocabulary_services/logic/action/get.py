@@ -130,13 +130,15 @@ def vocprez_vocabulary_terms(context, data_dict):
                         concept = binding.get('concept', None)
                         pref_label = binding.get('prefLabel', None)
                         definition = binding.get('definition', {})
+                        broader = binding.get('broader', {})
                         if concept and pref_label:
                             # Create the term in the internal vocabulary service
                             get_action('vocabulary_service_term_upsert')(context, {
                                 'vocabulary_service_id': service_id,
                                 'label': pref_label['value'],
                                 'uri': concept['value'],
-                                'definition': definition.get('value', None)
+                                'definition': definition.get('value', None),
+                                'broader': broader.get('value', None)
                             })
                     return True
 
