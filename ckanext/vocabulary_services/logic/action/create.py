@@ -17,6 +17,7 @@ def vocabulary_service_create(context, data_dict):
     validator.validate_vocabulary_service(context, data_dict)
 
     allow_duplicate_terms = True if data_dict.get('allow_duplicate_terms') else False
+    is_hierarchical = True if data_dict.get('is_hierarchical') else False
 
     service = VocabularyService(
         type=data_dict.get('type', ''),
@@ -25,6 +26,7 @@ def vocabulary_service_create(context, data_dict):
         uri=data_dict.get('uri', ''),
         update_frequency=data_dict.get('update_frequency', ''),
         allow_duplicate_terms=allow_duplicate_terms,
+        is_hierarchical=is_hierarchical,
     )
 
     session.add(service)
@@ -43,6 +45,7 @@ def vocabulary_service_term_create(context, data_dict):
         vocabulary_service_id=data_dict.get('vocabulary_service_id', ''),
         label=data_dict.get('label', ''),
         uri=data_dict.get('uri', ''),
+        broader=data_dict.get('broader', ''),
         definition=data_dict.get('definition', '')
     )
 
@@ -62,6 +65,7 @@ def vocabulary_service_term_upsert(context, data_dict):
     label = data_dict.get('label', None)
     uri = data_dict.get('uri', None)
     definition = data_dict.get('definition', None)
+    broader = data_dict.get('broader', None)
 
     if vocabulary_service_id and label and uri:
         existing_term = None
@@ -79,10 +83,13 @@ def vocabulary_service_term_upsert(context, data_dict):
                 if (existing_term.label == label) and (existing_term.uri != uri):
                     # If label is the same but uri is different, let's create them.
                     vocabulary_service_term_create(context, data_dict)
-                elif (existing_term.label != label or existing_term.definition != definition) and existing_term.uri == uri:
+                elif (existing_term.label != label
+                      or existing_term.definition != definition
+                      or existing_term.broader != broader) and existing_term.uri == uri:
                     # Update the term label if the URI is the same and label different.
                     # Update the term definition if the URI is the same and definition different.
                     existing_term.label = label
+                    existing_term.broader = broader
                     existing_term.definition = definition
                     existing_term.date_modified = datetime.utcnow()
 
@@ -92,10 +99,14 @@ def vocabulary_service_term_upsert(context, data_dict):
                     return True
             else:
                 # Check if something has changed - if so, update it, otherwise skip it...
-                if existing_term.label != label or existing_term.uri != uri or existing_term.definition != definition:
+                if existing_term.label != label \
+                        or existing_term.uri != uri \
+                        or existing_term.definition != definition \
+                        or existing_term.broader != broader:
                     # Update the term
                     existing_term.label = label
                     existing_term.uri = uri
+                    existing_term.broader = broader
                     existing_term.definition = definition
                     existing_term.date_modified = datetime.utcnow()
 
