@@ -1,0 +1,11 @@
+The Ecosciences.Qld Data Catalogue performs a series of automated checks on records in the system to maintain data quality.
+
+Please review the affected vocabulary services and update the invalid URL/URIs
+
+The affected vocabulary services are:
+{% for service in invalid_services %}
+{% set service_url = ckan_site_url + '/ckan-admin/vocabulary-services?id=' + service.id %}
+Vocabulary service name: {{service.title}} ({{service.name}})
+Link to vocabulary service: {{service_url}}
+Date / time when the error occurred: {{h.qdes_render_date_with_offset(current_utc)}}
+{% endfor %}

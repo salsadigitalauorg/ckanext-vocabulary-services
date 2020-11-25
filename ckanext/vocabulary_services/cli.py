@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
 
+import ckan.plugins.toolkit as toolkit
 import click
 import logging
 
+from ckan.common import config
+from ckan.views.admin import _get_sysadmins
 from ckanapi import LocalCKAN, ValidationError
+from ckanext.invalid_uris.helpers import valid_uri
 from ckanext.vocabulary_services import model
 from datetime import datetime
 
@@ -46,7 +50,8 @@ def refresh_required(service):
 
 
 @click.command(u"vocabulary-services-refresh")
-def refresh_cmd():
+@click.pass_context
+def refresh_cmd(ctx):
     """Refresh each of the internal vocabulary services' terms (if required)
     """
     registry = LocalCKAN()
@@ -54,6 +59,43 @@ def refresh_cmd():
     try:
         # Load all vocabulary_service records
         vocabulary_services = model.VocabularyService.all()
+
+        # Validate uri.
+        invalid_services = []
+        for service in vocabulary_services:
+            valid_uri_resp = valid_uri(service.uri)
+            if not valid_uri_resp.get('valid'):
+                invalid_services.append(service)
+
+        if invalid_services:
+            admins = _get_sysadmins().all()
+            ckan_site_url = config.get('ckan.site_url')
+            for admin in admins:
+                if admin.email:
+                    try:
+                        flask_app = ctx.meta['flask_app']
+                        with flask_app.test_request_context():
+                            subject = 'Vocabulary service invalid uris'
+                            body = toolkit.render(
+                                'emails/body/vocab_service_invalid_urls.txt',
+                                {
+                                    'invalid_services': invalid_services,
+                                    'ckan_site_url': ckan_site_url,
+                                    'current_utc': datetime.utcnow()
+                                }
+                            )
+                            body_html = toolkit.render(
+                                'emails/body/vocab_service_invalid_urls.html',
+                                {
+                                    'invalid_services': invalid_services,
+                                    'ckan_site_url': ckan_site_url,
+                                    'current_utc': datetime.utcnow()
+                                }
+                            )
+                            toolkit.enqueue_job(toolkit.mail_recipient, [admin.name, admin.email, subject, body, body_html])
+                    except Exception as e:
+                        log.error(e)
+
 
         # Check each vocabulary_service to see if it needs to be refreshed
         for service in vocabulary_services:
