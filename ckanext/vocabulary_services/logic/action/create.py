@@ -83,7 +83,9 @@ def vocabulary_service_term_upsert(context, data_dict):
                 if (existing_term.label == label) and (existing_term.uri != uri):
                     # If label is the same but uri is different, let's create them.
                     vocabulary_service_term_create(context, data_dict)
-                elif (existing_term.label != label or existing_term.definition != definition) and existing_term.uri == uri:
+                elif (existing_term.label != label
+                      or existing_term.definition != definition
+                      or existing_term.broader != broader) and existing_term.uri == uri:
                     # Update the term label if the URI is the same and label different.
                     # Update the term definition if the URI is the same and definition different.
                     existing_term.label = label
@@ -97,7 +99,10 @@ def vocabulary_service_term_upsert(context, data_dict):
                     return True
             else:
                 # Check if something has changed - if so, update it, otherwise skip it...
-                if existing_term.label != label or existing_term.uri != uri or existing_term.definition != definition:
+                if existing_term.label != label \
+                        or existing_term.uri != uri \
+                        or existing_term.definition != definition \
+                        or existing_term.broader != broader:
                     # Update the term
                     existing_term.label = label
                     existing_term.uri = uri
