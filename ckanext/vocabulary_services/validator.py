@@ -4,6 +4,7 @@ import logging
 from pprint import pformat
 
 from ckanext.vocabulary_services import model
+from ckanext.invalid_uris.helpers import valid_uri
 
 log = logging.getLogger(__name__)
 
@@ -44,6 +45,11 @@ def validate_vocabulary_service(context, vocabulary_data, is_update=False):
     # Check uri
     not_empty('uri', vocabulary_data, errors)
     tk.get_validator('url_validator')('uri', vocabulary_data, errors, context)
+
+    # Validate uri.
+    valid_uri_resp = valid_uri(vocabulary_data['uri'])
+    if not valid_uri_resp.get('valid'):
+        errors['uri'].append(tk._('Uri is not valid'))
 
     # Check update_frequency
     not_empty('update_frequency', vocabulary_data, errors)
