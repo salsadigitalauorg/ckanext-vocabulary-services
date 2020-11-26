@@ -1,0 +1,14 @@
+The Ecosciences.Qld Data Catalogue automatically checks for updates of controlled vocabularies, according to their update frequencies.
+
+The following vocabulary service could not be updated:
+
+{% for service in invalid_services %}
+{% set service_url = ckan_site_url + '/ckan-admin/vocabulary-services?id=' + service.id %}
+Vocabulary service: {{service.title}} {{service_url}}
+URI: {{service.uri}}
+Update date: {{h.qdes_render_date_with_offset(current_utc)}}
+{% endfor %}
+
+The URI/URL may no longer be valid or the service may have been temporarily unavailable during the update process.
+
+Please review the vocabulary service details and update the invalid URI/URL if required.
