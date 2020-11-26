@@ -4,7 +4,6 @@ import ckan.plugins.toolkit as toolkit
 import click
 import logging
 
-from ckan.common import config
 from ckan.views.admin import _get_sysadmins
 from ckanapi import LocalCKAN, ValidationError
 from ckanext.invalid_uris.helpers import valid_uri
@@ -12,7 +11,7 @@ from ckanext.vocabulary_services import model
 from datetime import datetime
 
 log = logging.getLogger(__name__)
-
+config = toolkit.config
 
 def refresh_required(service):
     utc_now = datetime.utcnow()
