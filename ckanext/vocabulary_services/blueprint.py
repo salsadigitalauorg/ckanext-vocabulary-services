@@ -5,6 +5,7 @@ import logging
 
 from ckan.common import request
 from ckanext.vocabulary_services import helpers
+from ckanext.invalid_uris.helpers import valid_uri
 from flask import Blueprint
 from ckan.views.api import _finish_ok
 from pprint import pformat
@@ -85,6 +86,12 @@ def refresh(id):
             'id': service.id,
             'uri': service.uri,
         }
+
+        # Validate uri.
+        valid_uri_resp = valid_uri(data_dict.get('uri'))
+        if not valid_uri_resp.get('valid'):
+            h.flash_error('Uri is not valid.')
+            return h.redirect_to('vocabulary_services.index')
 
         action = None
 
