@@ -68,7 +68,6 @@ def refresh_cmd(ctx):
 
         if invalid_services:
             admins = _get_sysadmins().all()
-            ckan_site_url = config.get('ckan.site_url')
             for admin in admins:
                 if admin.email:
                     try:
@@ -79,7 +78,6 @@ def refresh_cmd(ctx):
                                 'emails/body/vocab_service_invalid_urls.txt',
                                 {
                                     'invalid_services': invalid_services,
-                                    'ckan_site_url': ckan_site_url,
                                     'current_utc': datetime.utcnow()
                                 }
                             )
@@ -87,7 +85,6 @@ def refresh_cmd(ctx):
                                 'emails/body/vocab_service_invalid_urls.html',
                                 {
                                     'invalid_services': invalid_services,
-                                    'ckan_site_url': ckan_site_url,
                                     'current_utc': datetime.utcnow()
                                 }
                             )

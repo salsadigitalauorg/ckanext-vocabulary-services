@@ -4,7 +4,7 @@
 
 {% for service in invalid_services %}
     <ul>
-        {% set service_url = ckan_site_url + '/ckan-admin/vocabulary-services?id=' + service.id %}
+        {% set service_url = h.url_for('vocabulary_services.index', id=service.id, _external=True) %}
         <li>Vocabulary service: {{service.title}} <a href="{{service_url}}">{{service_url}}</a></li>
         <li>URI: <a href="{{service.uri}}">{{service.uri}}</a></li>
         <li>Update date: {{h.qdes_render_date_with_offset(current_utc)}}</li>
