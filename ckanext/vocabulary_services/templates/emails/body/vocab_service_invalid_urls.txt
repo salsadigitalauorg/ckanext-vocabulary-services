@@ -1,6 +1,6 @@
 The Ecosciences.Qld Data Catalogue automatically checks for updates of controlled vocabularies, according to their update frequencies.
 
-The following vocabulary service could not be updated:
+The following vocabulary service(s) could not be updated:
 
 {% for service in invalid_services %}
 {% set service_url = h.url_for('vocabulary_services.index', id=service.name, _external=True) %}
