@@ -40,7 +40,7 @@ def secure_upload():
 
             # Check The file format is CSV
             # TODO: Check the CSV file has the correct header, compare with the fields in config
-            if upload.upload_field_storage.mimetype != 'text/csv':
+            if upload.upload_field_storage.mimetype not in ['text/csv', 'application/vnd.ms-excel']:
                 log.debug('Secure upload file mimetype {0} for {1}'.format(upload.upload_field_storage.mimetype, upload.filename))
                 raise Exception('Invalid file type "{}". Only "text/csv" files are allowed'.format(upload.upload_field_storage.mimetype))
 
