@@ -35,6 +35,7 @@ def secure_upload():
                     tuplize_dict(
                         parse_params(req))))
 
+            original_filename = data_dict.get('file_upload').filename
             upload = uploader.get_uploader('secure_csv')
             upload.update_data_dict(data_dict, None, 'file_upload', None)
 
@@ -71,7 +72,7 @@ def secure_upload():
 
                 # @TODO: Remove the temporary file? I don't know if it exists, or if we can?
 
-                h.flash_success('{} successfully uploaded and encrypted.'.format(filename))
+                h.flash_success('{} successfully uploaded and encrypted.'.format(original_filename))
 
         except Exception as e:
             h.flash_error(str(e))
