@@ -1,3 +1,4 @@
+import ckan.model as model
 import ckan.lib.navl.dictization_functions as dict_fns
 import ckan.lib.uploader as uploader
 import logging
@@ -5,7 +6,7 @@ import os
 import ckan.plugins.toolkit as toolkit
 import mimetypes
 
-from ckan.common import request
+from ckan.common import request, c
 from ckan.logic import clean_dict, parse_params, tuplize_dict
 from ckan.plugins.toolkit import h, render
 from ckanext.vocabulary_services import helpers as vocabulary_services_helpers
@@ -87,7 +88,12 @@ def secure_upload():
 
 def secure_vocabulary_search(vocabulary_name):
     try:
-        toolkit.check_access(u'package_create', {})
+        context = {
+            'model': model,
+            'user': c.user,
+            'auth_user_obj': c.userobj
+        }
+        toolkit.check_access(u'package_create', context)
     except toolkit.NotAuthorized:
         toolkit.abort(403, toolkit._('Not authorized'))
 
