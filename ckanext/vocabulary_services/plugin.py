@@ -54,6 +54,7 @@ class VocabularyServicesPlugin(plugins.SingletonPlugin):
             'get_vocabulary_service_types': helpers.get_vocabulary_service_types,
             'get_vocabulary_service_update_frequencies': helpers.get_vocabulary_service_update_frequencies,
             'scheming_vocabulary_service_choices': helpers.scheming_vocabulary_service_choices,
+            'scheming_vocabulary_service_hierarchical': helpers.scheming_vocabulary_service_hierarchical,
         }
 
     # IClick

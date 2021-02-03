@@ -3,6 +3,7 @@ import logging
 from ckan.lib.base import abort
 from ckan.logic import check_access as logic_check_access
 from ckan.plugins.toolkit import get_action
+from pprint import pformat
 
 log = logging.getLogger(__name__)
 
@@ -47,3 +48,42 @@ def check_access(context):
         logic_check_access('config_option_update', context, {})
     except Exception as e:
         abort(404, 'Not found')
+
+
+def scheming_vocabulary_service_hierarchical(field):
+    """
+    Provides a list of terms from a given `vocabulary_service`.`name` with parent and child supports.
+    """
+    return scheming_vocabulary_service_choices(field)
+
+
+def render_hierarchical(terms_list):
+    def get_top_parents(available_uris):
+        return [term for term in terms_list if not term['broader'] in available_uris]
+
+    def get_nodes(term):
+        nodes = term.copy()
+        children = get_children(term['uri'])
+        if children:
+            nodes['folder'] = True
+            nodes['children'] = [get_nodes(child) for child in children]
+
+        return nodes
+
+    def get_children(broader):
+        return [term for term in terms_list if term['broader'] == broader]
+
+    # List available uris.
+    available_term_uris = [available_term['uri'] for available_term in terms_list]
+
+    # Find the top parents.
+    parents = get_top_parents(available_term_uris)
+
+    # Get children of the parents.
+    for parent in parents:
+        parent_nodes = get_nodes(parent)
+        if parent_nodes.get('children'):
+            parent['folder'] = True
+            parent['children'] = parent_nodes['children']
+
+    return parents
