@@ -157,8 +157,28 @@ def vocabulary_service_term_autocomplete(term_name):
 
     return _finish_ok(result_set)
 
+
+def vocabulary_service_term_json(term_name):
+    result = get_action('get_vocabulary_service_terms')({}, term_name)
+    if not result:
+        return _finish_ok({})
+
+    res = []
+    for term in result:
+        dict = term.__dict__
+        dict.pop('_sa_instance_state')
+        dict.pop('date_created')
+        dict.pop('date_modified')
+        dict['title'] = dict.get('label')
+        dict['key'] = dict.get('uri')
+        res.append(dict)
+
+    return _finish_ok(helpers.render_hierarchical(res))
+
+
 vocabulary_services.add_url_rule(u'/vocabulary-services', methods=[u'GET', u'POST'], view_func=index)
 vocabulary_services.add_url_rule(u'/vocabulary-service/refresh/<id>', view_func=refresh)
 vocabulary_services.add_url_rule(u'/vocabulary-service/terms/<id>', view_func=terms)
 vocabulary_services.add_url_rule(u'/vocabulary-service/delete/<id>', methods=[u'POST'], view_func=delete)
 vocabulary_services.add_url_rule(u'/vocabulary-service/term-autocomplete/<term_name>', view_func=vocabulary_service_term_autocomplete)
+vocabulary_services.add_url_rule(u'/vocabulary-service/term-json/<term_name>', view_func=vocabulary_service_term_json)
