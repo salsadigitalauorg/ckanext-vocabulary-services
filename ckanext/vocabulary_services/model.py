@@ -129,7 +129,7 @@ class VocabularyServiceTerm(DomainObject):
         '''Returns a VocabularyServiceTerm object referenced by its id.'''
         query = meta.Session.query(cls)\
             .filter(cls.vocabulary_service_id == vocabulary_service_id)\
-            .filter(or_(cls.label == label, cls.uri == uri))
+            .filter(or_(func.lower(cls.label) == func.lower(label), func.lower(cls.uri) == func.lower(uri)))
         vocabulary_service_term = query.first()
 
         return vocabulary_service_term
@@ -139,7 +139,7 @@ class VocabularyServiceTerm(DomainObject):
         '''Returns a VocabularyServiceTerm object referenced by its uri.'''
         query = meta.Session.query(cls)\
             .filter(cls.vocabulary_service_id == vocabulary_service_id)\
-            .filter(cls.uri == uri)
+            .filter(func.lower(cls.uri) == func.lower(uri))
         vocabulary_service_term = query.first()
 
         return vocabulary_service_term

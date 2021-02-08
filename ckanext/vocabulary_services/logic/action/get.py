@@ -217,3 +217,19 @@ def vocabulary_service_term_search(context, search_dict):
                 data.append({'value': item.uri, 'name': item.label, 'title': item.definition})
 
             return data
+
+
+def vocabulary_service_term(context, data_dict):
+    # TODO: Check access?
+    data = None
+    vocabulary_service_name = data_dict.get('vocabulary_service_name', '')
+    term_label = data_dict.get('term_label', '')
+    term_uri = data_dict.get('term_uri', '')
+    vocab_service = vocabulary_service(context, vocabulary_service_name)
+    if vocab_service:
+        term = model.VocabularyServiceTerm.get_by_label_or_uri(vocab_service.id, term_label, term_uri)
+        if term:
+            log.debug(f"vocabulary_service_term : {term}")
+            data = term.as_dict()
+
+    return data
