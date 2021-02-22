@@ -13,6 +13,7 @@ from ckanext.vocabulary_services import helpers as vocabulary_services_helpers
 from ckanext.vocabulary_services.secure import crypt, helpers
 from flask import Blueprint
 from ckan.views.api import _finish_ok
+from pprint import pformat
 
 log = logging.getLogger(__name__)
 
@@ -97,9 +98,10 @@ def secure_vocabulary_search(vocabulary_name):
     except toolkit.NotAuthorized:
         toolkit.abort(403, toolkit._('Not authorized'))
 
+    alt_search_display = True if request.args.get('alt', False) else False
     query = request.args.get('incomplete', '')
     limit = request.args.get('limit', 10)
-    search_dict = {'vocabulary_name': vocabulary_name, 'query': query, 'limit': limit}
+    search_dict = {'vocabulary_name': vocabulary_name, 'query': query, 'limit': limit, 'alt_search_display' : alt_search_display}
 
     if not query:
         return _finish_ok({})

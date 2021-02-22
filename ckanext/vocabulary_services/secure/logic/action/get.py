@@ -55,6 +55,7 @@ def secure_vocabulary_search(context, data_dict):
     vocabulary_name = data_dict.get('vocabulary_name', None)
     query = data_dict.get('query', '').lower()
     limit = data_dict.get('limit', 10)
+    is_alt_search_display = data_dict.get('alt_search_display', False)
 
     # Exit early if we don't have what we need to continue.
     # Minimum of 3+ characters must be entered before searching
@@ -73,6 +74,7 @@ def secure_vocabulary_search(context, data_dict):
             # csv_rows = csv.DictReader(rows))
 
             search_display_fields = secure_vocab_config.get('search_display_fields')
+            alt_search_display = secure_vocab_config.get('alt_search_display_fields')
             search_fields = secure_vocab_config.get('search_fields')
 
             csv_rows = csv.DictReader(open(secure_filepath))
@@ -82,10 +84,16 @@ def secure_vocabulary_search(context, data_dict):
                     break
                 for search_field in search_fields:
                     if query in row[search_field].lower():
-                        result_dict = {
-                            "value": search_display_fields.get('value', '').format(**row),
-                            "name": search_display_fields.get('name', '').format(**row)
-                        }
+                        if is_alt_search_display:
+                            result_dict = {
+                                "value": alt_search_display.get('value', '').format(**row),
+                                "name": alt_search_display.get('name', '').format(**row)
+                            }
+                        else:
+                            result_dict = {
+                                "value":search_display_fields.get('value', '').format(**row),
+                                "name": search_display_fields.get('name', '').format(**row)
+                            }
                         # Check if result already exists before adding it to results list
                         if not next((result for result in results if result == result_dict), None):
                             results.append(result_dict)
