@@ -13,6 +13,7 @@ from datetime import datetime
 log = logging.getLogger(__name__)
 config = toolkit.config
 
+
 def refresh_required(service):
     utc_now = datetime.utcnow()
 

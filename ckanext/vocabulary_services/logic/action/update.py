@@ -39,7 +39,7 @@ def update_vocabulary_terms(context, data_dict):
                     get_action('update_vocabulary_service_last_processed')(context, id)
                     log.info('Terms in vocabulary refreshed')
             elif service_type == 'remote_csv':
-                if get_action('remote_csv_vocabulary_terms')(context, data_dict):
+                if get_action('get_remote_csv_vocabulary_terms')(context, data_dict):
                     get_action('update_vocabulary_service_last_processed')(context, id)
                     log.info('Terms in vocabulary refreshed')
             else:
