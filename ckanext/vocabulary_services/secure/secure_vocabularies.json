@@ -1,7 +1,7 @@
 [
   {
     "name": "point-of-contact",
-    "title": "Point of Contact",
+    "title": "Contact names",
     "filename": "point-of-contact.csv",
     "enable_upload": true,
     "listable": false,
