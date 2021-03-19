@@ -91,8 +91,8 @@ def secure_vocabulary_search(vocabulary_name):
     try:
         context = {
             'model': model,
-            'user': c.user,
-            'auth_user_obj': c.userobj
+            'user': toolkit.g.user,
+            'auth_user_obj': toolkit.g.userobj
         }
         toolkit.check_access(u'package_create', context)
     except toolkit.NotAuthorized:
