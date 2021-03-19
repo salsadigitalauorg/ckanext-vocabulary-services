@@ -48,7 +48,7 @@ def secure_vocabulary_record(context, data_dict):
 
 
 def secure_vocabulary_search(context, data_dict):
-    if not authz.has_user_permission_for_some_org(context.get('user'), 'create_dataset'):
+    if not authz.is_sysadmin(context.get('user')) and not authz.has_user_permission_for_some_org(context.get('user'), 'create_dataset'):
         return {'success': False, 'msg': toolkit._('Not authorized')}
 
     results = []
