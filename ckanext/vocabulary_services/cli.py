@@ -74,7 +74,7 @@ def refresh_cmd(ctx):
                     try:
                         flask_app = ctx.meta['flask_app']
                         with flask_app.test_request_context():
-                            subject = 'Ecosciences.Qld Data Catalogue – vocabulary service update error'
+                            subject = 'QESD catalogue – vocabulary service update error'
                             body = toolkit.render(
                                 'emails/body/vocab_service_invalid_urls.txt',
                                 {

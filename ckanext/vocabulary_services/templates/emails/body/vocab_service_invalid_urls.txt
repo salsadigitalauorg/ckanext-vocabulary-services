@@ -1,4 +1,4 @@
-The Ecosciences.Qld Data Catalogue automatically checks for updates of controlled vocabularies, according to their update frequencies.
+Queensland Environmental Science Data (QESD) catalogue automatically checks for updates of controlled vocabularies, according to their update frequencies.
 
 The following vocabulary service(s) could not be updated:
 
