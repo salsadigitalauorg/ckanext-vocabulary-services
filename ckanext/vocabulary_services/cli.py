@@ -89,7 +89,9 @@ def refresh_cmd(ctx):
                                     'current_utc': datetime.utcnow()
                                 }
                             )
-                            toolkit.enqueue_job(toolkit.mail_recipient, [admin.name, admin.email, subject, body, body_html])
+                            # Improvements for job worker visibility when troubleshooting via logs
+                            job_title = f'Vocabulary service update error: Sending email to {admin.name}'
+                            toolkit.enqueue_job(toolkit.mail_recipient, [admin.name, admin.email, subject, body, body_html], title=job_title)
                     except Exception as e:
                         log.error(e)
 
