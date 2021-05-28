@@ -104,7 +104,7 @@ def csiro_vocabulary_terms(context, data_dict):
     return False
 
 
-def vocprez_vocabulary_terms(context, data_dict):
+def sparl_json_vocabulary_terms(context, data_dict):
     """
     Query the externally hosted vocabulary and extract the terms out into our internal
     vocabulary service.
