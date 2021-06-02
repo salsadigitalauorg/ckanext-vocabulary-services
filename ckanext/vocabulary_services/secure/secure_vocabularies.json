@@ -19,7 +19,8 @@
     ],
     "search_fields": [
       "Functional Position",
-      "Name"
+      "Name",
+      "Email"
     ],
     "search_display_fields": {
       "value": "{PositionID}",
