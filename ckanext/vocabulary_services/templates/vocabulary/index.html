@@ -132,7 +132,7 @@
                   <strong>Is hierarchical:</strong> {{ "Yes" if service.is_hierarchical else "No" }}
               </small>
               <br />
-              <span class="label label-{% if service.type == 'csiro' %}primary{% elif service.type == 'vocprez' %}success{% else %}default{% endif %}">{{ service.type }}</span>
+              <span class="label label-primary{% if service.type == 'vocprez' %}success{% else %}default{% endif %}">{{ service.type }}</span>
           </td>
           <td>
             <a href="{{ h.url_for('vocabulary_services.terms', id=service.id) }}">View terms</a>

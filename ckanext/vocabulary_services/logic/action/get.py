@@ -41,70 +41,7 @@ def vocabulary_service_terms(context, name):
 
     return terms
 
-
-def csiro_vocabulary_terms(context, data_dict):
-    """
-    Query the externally hosted vocabulary and extract the terms out into our internal
-    vocabulary service.
-    Example:
-        http://registry.it.csiro.au/def/isotc211/MD_SpatialRepresentationTypeCode
-
-    This example has multiple output types - for this example we will attempt to use
-    the JSON-LD endpoint:
-
-        http://registry.it.csiro.au/def/isotc211/MD_SpatialRepresentationTypeCode?_format=jsonld
-    """
-    log.debug('>>> Attempting to fetch vocabulary from CSIRO service...')
-
-    service_id = data_dict.get('id', None)
-    service_uri = data_dict.get('uri', None)
-
-    if service_id and service_uri:
-        try:
-            r = requests.get(service_uri)
-
-            log.debug('>>> Request status code: %s' % r.status_code)
-
-            if r.status_code == 200:
-                log.debug('>>> Finished fetching vocabulary from CSIRO service.')
-
-                response = r.json()
-
-                # If you open the *?_format=jsonld URI above, you can see that the terms are
-                # contained in the '@graph' dict element, and the first item in that list is
-                # some metadata about the vocabulary, so we'll skip that for now.
-                for i in range(len(response['@graph'])):
-                    if i > 0:
-                        term = response['@graph'][i]
-                        uri = term.get('@id', None)
-                        label = term.get('rdfs:label', None)
-                        if type(label) is dict:
-                            label = label.get('@value')
-                        elif type(label) is list:
-                            label = label[0]
-
-                        definition = term.get('skos:definition', None) or term.get('dct:description', None)
-                        if type(definition) is dict:
-                            definition = definition.get('@value')
-
-                        if uri and label:
-                            # Create the term in the internal vocabulary service
-                            get_action('vocabulary_service_term_upsert')(context, {
-                                'vocabulary_service_id': service_id,
-                                'label': label,
-                                'uri': uri,
-                                'definition': definition
-                            })
-                return True
-
-        except Exception as e:
-            log.error('>>> ERROR Attempting to fetch vocabulary from CSIRO service')
-            log.error(str(e))
-
-    return False
-
-
-def sparl_json_vocabulary_terms(context, data_dict):
+def sparql_json_vocabulary_terms(context, data_dict):
     """
     Query the externally hosted vocabulary and extract the terms out into our internal
     vocabulary service.

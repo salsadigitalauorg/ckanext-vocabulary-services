@@ -30,11 +30,7 @@ def update_vocabulary_terms(context, data_dict):
 
     if id and uri and service_type:
         try:
-            if service_type == 'csiro':
-                if get_action('get_csiro_vocabulary_terms')(context, data_dict):
-                    get_action('update_vocabulary_service_last_processed')(context, id)
-                    log.info('Terms in vocabulary refreshed')
-            elif service_type == 'sparql_json':
+            if service_type == 'sparql_json':
                 if get_action('get_sparql_json_vocabulary_terms')(context, data_dict):
                     get_action('update_vocabulary_service_last_processed')(context, id)
                     log.info('Terms in vocabulary refreshed')

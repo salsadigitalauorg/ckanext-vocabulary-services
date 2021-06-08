@@ -95,13 +95,12 @@ def refresh(id):
 
         action = None
 
-        if service.type == 'csiro':
-            action = 'get_csiro_vocabulary_terms'
-        elif service.type == 'sparql_json':
-            action = 'sparl_json_vocabulary_terms'
+        if service.type == 'sparql_json':
+            action = 'get_sparql_json_vocabulary_terms'
         elif service.type == 'remote_csv':
             action = 'get_remote_csv_vocabulary_terms'
 
+        breakpoint()
         if action:
             if get_action(action)({}, data_dict):
                 get_action('update_vocabulary_service_last_processed')({}, service.id)
