@@ -48,7 +48,7 @@ def sparql_json_vocabulary_terms(context, data_dict):
     Example:
         https://vocabs.gsq.digital/endpoint?query=PREFIX%20skos%3A%3Chttp%3A%2F%2Fwww.w3.org%2F2004%2F02%2Fskos%2Fcore%23%3ESELECT%3Fconcept%3FprefLabel%20WHERE%7B%3Fconcept%20a%20skos%3AConcept%3Bskos%3AprefLabel%3FprefLabel%3Bskos%3AinScheme%3Chttp%3A%2F%2Flinked.data.gov.au%2Fdef%2Fgsq-dataset-theme%3E.%7Dorder%20by%3FprefLabel&Accept=application/sparql-results+json
     """
-    log.debug('>>> Attempting to fetch vocabulary from VocPrez service...')
+    log.debug('>>> Attempting to fetch vocabulary from SPARQL+JSON service...')
 
     service_id = data_dict.get('id', None)
     service_uri = data_dict.get('uri', None)
@@ -60,7 +60,7 @@ def sparql_json_vocabulary_terms(context, data_dict):
             log.debug('>>> Request status code: %s' % r.status_code)
 
             if r.status_code == 200:
-                log.debug('>>> Finished fetching vocabulary from VocPrez service.')
+                log.debug('>>> Finished fetching vocabulary from SPARQL+JSON service.')
 
                 response = r.json()
 
