@@ -100,7 +100,6 @@ def refresh(id):
         elif service.type == 'remote_csv':
             action = 'get_remote_csv_vocabulary_terms'
 
-        breakpoint()
         if action:
             if get_action(action)({}, data_dict):
                 get_action('update_vocabulary_service_last_processed')({}, service.id)
