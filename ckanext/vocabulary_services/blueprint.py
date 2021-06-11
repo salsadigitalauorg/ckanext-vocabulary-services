@@ -95,10 +95,8 @@ def refresh(id):
 
         action = None
 
-        if service.type == 'csiro':
-            action = 'get_csiro_vocabulary_terms'
-        elif service.type == 'vocprez':
-            action = 'get_vocprez_vocabulary_terms'
+        if service.type == 'sparql_json':
+            action = 'get_sparql_json_vocabulary_terms'
         elif service.type == 'remote_csv':
             action = 'get_remote_csv_vocabulary_terms'
 

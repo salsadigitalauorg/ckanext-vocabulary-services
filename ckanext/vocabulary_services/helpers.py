@@ -11,8 +11,7 @@ log = logging.getLogger(__name__)
 def get_vocabulary_service_types():
     return [
         {'text': 'Remote CSV file', 'value': 'remote_csv'},
-        {'text': 'GSQ VocPrez', 'value': 'vocprez'},
-        {'text': 'CSIRO Linked Data Registry', 'value': 'csiro'},
+        {'text': 'SPARQL + JSON', 'value': 'sparql_json'},
     ]
 
 
