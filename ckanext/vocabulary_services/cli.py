@@ -3,6 +3,7 @@
 import ckan.plugins.toolkit as toolkit
 import click
 import logging
+import os
 
 from ckan.views.admin import _get_sysadmins
 from ckanapi import LocalCKAN, ValidationError
@@ -67,7 +68,7 @@ def refresh_cmd(ctx):
             if not valid_uri_resp.get('valid'):
                 invalid_services.append(service)
 
-        if invalid_services:
+        if invalid_services and not os.environ.get('DISABLE_CRON_JOB_EMAILS'):
             admins = _get_sysadmins().all()
             for admin in admins:
                 if admin.email:
