@@ -3,10 +3,13 @@
 {% import 'macros/form.html' as form %}
 
 {% block primary_content_inner %}
+  {% if is_update %}
+    <h2>Edit vocabulary service: {{ data.title }}</h2>
+  {% else %}
+    <h2>Add a vocabulary service</h2>
+  {% endif %}
 
-  <h2>Add a vocabulary service</h2>
-
-  <form id="dataset-edit" class="dataset-form" method="post" action="{{ h.url_for('vocabulary_services.index') }}" novalidate>
+  <form id="dataset-edit" class="dataset-form" method="post" action="{{ h.url_for('vocabulary_services.index', id=data.id) if is_update else h.url_for('vocabulary_services.index')}}" novalidate>
 
     {{ form.input(
       'title',
@@ -56,8 +59,32 @@
         is_required=True
     ) }}
 
+    {{ form.checkbox(
+        'allow_duplicate_terms',
+        id='field-allow-duplicate_terms',
+        label=_('Allow duplicate terms'),
+        value=True,
+        checked="checked" if data.allow_duplicate_terms else "",
+        error=errors.allow_duplicate_terms,
+        classes=['control-medium']
+    ) }}
+
+    {{ form.checkbox(
+        'is_hierarchical',
+        id='field-is-hierarchical',
+        label=_('Is hierarchical'),
+        value=True,
+        checked="checked" if data.is_hierarchical else "",
+        error=errors.is_hierarchical,
+        classes=['control-medium']
+    ) }}
+
+    {% if is_update %}
+        {{ form.hidden('id', value=data.id) }}
+    {% endif %}
+
     <div class="form-actions">
-      <button class="btn btn-primary" type="submit">{{ _('Add') }}</button>
+        <button class="btn btn-primary" type="submit">{{ _('Update') if is_update else _('Add vocabulary service') }}</button>
     </div>
 
   </form>
@@ -66,32 +93,63 @@
 
   <h2>Vocabulary services</h2>
 
+    <style>
+        table.vocabs tr td {
+            border: none;
+        }
+        table details {
+            display: inline-block;
+        }
+        tr.odd {
+            background-color: #f8f8f8;
+        }
+        tr.even {
+            background-color: transparent;
+        }
+    </style>
+
   {% if services %}
     <h3>Total: {{ services|length }}</h3>
-    <table class="table table-bordered">
+    <table class="table vocabs">
       <thead>
-        <th width="25%">Title</th>
-        <th>Name</th>
-        <th width="12%">Type</th>
-        <th>URI</th>
+        <th width="35%">Title</th>
         <th width="12%">Terms</th>
         <th width="25%">Actions</th>
       </thead>
       <tbody>
         {% for service in services %}
-        <tr>
-          <td>{{ service.title }}</td>
-          <td>{{ service.name }}</td>
-          <td>{{ service.type }}</td>
-          <td>{{ service.uri }}</td>
+        <tr class="{{ 'even' if loop.index % 2 == 0 else 'odd' }}">
+          <td>
+              <strong>
+                  <a title="Click to view terms" href="{{ h.url_for('vocabulary_services.terms', id=service.id) }}">{{ service.title }}</a>
+              </strong>
+              <br />
+              <small>
+                  <strong>Name:</strong> {{ service.name }}
+                  <br />
+                  <strong>Allow duplicate terms:</strong> {{ "Yes" if service.allow_duplicate_terms else "No" }}
+                  <br />
+                  <strong>Is hierarchical:</strong> {{ "Yes" if service.is_hierarchical else "No" }}
+              </small>
+              <br />
+              <span class="label label-primary{% if service.type == 'vocprez' %}success{% else %}default{% endif %}">{{ service.type }}</span>
+          </td>
           <td>
             <a href="{{ h.url_for('vocabulary_services.terms', id=service.id) }}">View terms</a>
           </td>
           <td>
             <a href="{{ h.url_for('vocabulary_services.refresh', id=service.id) }}" class="btn btn-sm btn-warning">Refresh</a>
-            <a href="" class="btn btn-sm btn-primary">Edit</a>
-            <a href="" class="btn btn-sm btn-danger">Delete</a>
+            <a href="{{ h.url_for('vocabulary_services.index', id=service.id) }}" class="btn btn-sm btn-primary">Edit</a>
+            <a href="{{ h.url_for('vocabulary_services.delete', id=service.id) }}" class="btn btn-sm btn-danger" data-module="confirm-action" data-module-content="Are you sure you want to delete this vocabulary service and its terms?">Delete</a>
           </td>
+        </tr>
+        <tr class="{{ 'even' if loop.index % 2 == 0 else 'odd' }}">
+            <td colspan="3"><small>
+                <details>
+                    <summary>URI <span style="color: #bbb">(click to display)</span></summary>
+                    URI: {{ service.uri }}
+                </details>
+            </small></td>
         </tr>
         {% endfor %}
       </tbody>

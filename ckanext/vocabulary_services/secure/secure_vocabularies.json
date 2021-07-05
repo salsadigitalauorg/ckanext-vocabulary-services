@@ -1,0 +1,34 @@
+[
+  {
+    "name": "point-of-contact",
+    "title": "Contact names",
+    "filename": "point-of-contact.csv",
+    "enable_upload": true,
+    "listable": false,
+    "fields": [
+      "PositionID",
+      "Functional Position",
+      "Email",
+      "Name"
+    ],
+    "lookup_field": "PositionID",
+    "display_fields": [
+      "Functional Position",
+      "Name",
+      "Email"
+    ],
+    "search_fields": [
+      "Functional Position",
+      "Name",
+      "Email"
+    ],
+    "search_display_fields": {
+      "value": "{PositionID}",
+      "name": "{Name} - {Functional Position}"
+    },
+    "alt_search_display_fields": {
+      "value": "{Name} - {Functional Position}",
+      "name": "{Name} - {Functional Position}"
+    }
+  }
+]

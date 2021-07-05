@@ -3,7 +3,7 @@ import ckan.plugins.toolkit as toolkit
 
 from ckanext.vocabulary_services import blueprint, helpers
 from ckanext.vocabulary_services.cli import get_commands
-from ckanext.vocabulary_services.logic.action import get, create
+from ckanext.vocabulary_services.logic.action import get, create, update
 
 
 class VocabularyServicesPlugin(plugins.SingletonPlugin):
@@ -34,10 +34,17 @@ class VocabularyServicesPlugin(plugins.SingletonPlugin):
             'get_vocabulary_services': get.vocabulary_services,
             'get_vocabulary_service': get.vocabulary_service,
             'get_vocabulary_service_terms': get.vocabulary_service_terms,
-            'get_csiro_vocabulary_terms': get.csiro_vocabulary_terms,
-            'get_vocprez_vocabulary_terms': get.vocprez_vocabulary_terms,
+            'get_vocabulary_service_term': get.vocabulary_service_term,
+            'get_remote_csv_vocabulary_terms': get.remote_csv_vocabulary_terms,
+            'get_sparql_json_vocabulary_terms': get.sparql_json_vocabulary_terms,
+            'vocabulary_service_term_search': get.vocabulary_service_term_search,
             'vocabulary_service_create': create.vocabulary_service_create,
+            'vocabulary_service_edit': update.vocabulary_service_edit,
+            'vocabulary_service_delete': update.vocabulary_service_delete,
             'vocabulary_service_term_create': create.vocabulary_service_term_create,
+            'vocabulary_service_term_upsert': create.vocabulary_service_term_upsert,
+            'update_vocabulary_terms': update.update_vocabulary_terms,
+            'update_vocabulary_service_last_processed': update.vocabulary_service_last_processed
         }
 
     # ITemplateHelpers
@@ -47,6 +54,7 @@ class VocabularyServicesPlugin(plugins.SingletonPlugin):
             'get_vocabulary_service_types': helpers.get_vocabulary_service_types,
             'get_vocabulary_service_update_frequencies': helpers.get_vocabulary_service_update_frequencies,
             'scheming_vocabulary_service_choices': helpers.scheming_vocabulary_service_choices,
+            'scheming_vocabulary_service_hierarchical': helpers.scheming_vocabulary_service_hierarchical,
         }
 
     # IClick

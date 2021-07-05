@@ -4,14 +4,25 @@
 
   <a href="{{ h.url_for('vocabulary_services.index') }}">&lt; Back</a>
 
-  <h2>Vocabulary terms</h2>
+  <h1>{{ vocabulary_service.title }} <small>(Name: {{ vocabulary_service.name }})</small></h1>
+
+  <h2>Vocabulary terms <a href="{{ h.url_for('vocabulary_services.refresh', id=vocabulary_service.id) }}" class="btn btn-sm btn-warning">Refresh</a></h2>
 
   {% if terms %}
     <h3>Total: {{ terms|length }}</h3>
+
+    <p>
+        Last updated: {% snippet 'snippets/local_friendly_datetime.html', datetime_obj=vocabulary_service.date_last_processed %}
+    </p>
+
     <table class="table table-bordered">
       <thead>
         <th>Label</th>
         <th>URI</th>
+        {% if vocabulary_service.is_hierarchical %}
+        <th>Broader term</th>
+        {% endif %}
+        <th>Definition</th>
         <th>Created</th>
         <th>Updated</th>
       </thead>
@@ -20,6 +31,10 @@
         <tr>
           <td>{{ term.label }}</td>
           <td>{{ term.uri }}</td>
+          {% if vocabulary_service.is_hierarchical %}
+          <td>{{ term.broader }}</td>
+          {% endif %}
+          <td>{{ term.definition }}</td>
           <td>{{ term.date_created }}</td>
           <td>{{ term.date_modified }}</td>
         </tr>

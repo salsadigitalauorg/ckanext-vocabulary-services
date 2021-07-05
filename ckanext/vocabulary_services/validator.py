@@ -1,8 +1,12 @@
 import ckan.plugins.toolkit as tk
 import ckan.lib.navl.dictization_functions as df
+import logging
+from pprint import pformat
 
 from ckanext.vocabulary_services import model
+from ckanext.invalid_uris.helpers import valid_uri
 
+log = logging.getLogger(__name__)
 
 def not_empty(key, data, errors):
     """
@@ -14,7 +18,7 @@ def not_empty(key, data, errors):
         errors[key].append(tk._('Missing value'))
 
 
-def validate_vocabulary_service(context, vocabulary_data):
+def validate_vocabulary_service(context, vocabulary_data, is_update=False):
 
     errors = {'title': [], 'name': [], 'type': [], 'uri': [], 'update_frequency': []}
 
@@ -24,8 +28,16 @@ def validate_vocabulary_service(context, vocabulary_data):
     # Check name
     not_empty('name', vocabulary_data, errors)
     # Only check if name exists if there is no not_empty error
-    if len(errors.get('name')) == 0 and model.VocabularyService.name_exists(vocabulary_data['name']):
+    if len(errors.get('name')) == 0 and model.VocabularyService.name_exists(vocabulary_data['name']) and not is_update:
         errors['name'].append(tk._('Name already exists'))
+
+    # Make sure only current vocab is using the same name when edit.
+    if len(errors.get('name')) == 0 and is_update:
+        vocab_by_name = model.VocabularyService.get_by_name(vocabulary_data['name'])
+
+        if vocab_by_name:
+            if len(vocab_by_name) > 1 or vocab_by_name[0].id != vocabulary_data['id']:
+                errors['name'].append(tk._('Name already exists'))
 
     # Check type
     not_empty('type', vocabulary_data, errors)
@@ -33,6 +45,11 @@ def validate_vocabulary_service(context, vocabulary_data):
     # Check uri
     not_empty('uri', vocabulary_data, errors)
     tk.get_validator('url_validator')('uri', vocabulary_data, errors, context)
+
+    # Validate uri.
+    valid_uri_resp = valid_uri(vocabulary_data['uri'])
+    if not valid_uri_resp.get('valid'):
+        errors['uri'].append(tk._('Uri is not valid'))
 
     # Check update_frequency
     not_empty('update_frequency', vocabulary_data, errors)

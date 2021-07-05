@@ -1,0 +1,21 @@
+label,uri
+hasPart,https://dublincore.org/specifications/dublin-core/dcmi-terms/#hasPart
+isPartOf,https://dublincore.org/specifications/dublin-core/dcmi-terms/#isPartOf
+conformsTo,https://dublincore.org/specifications/dublin-core/dcmi-terms/#conformsTo
+isFormatOf,https://dublincore.org/specifications/dublin-core/dcmi-terms/#isFormatOf
+hasFormat,https://dublincore.org/specifications/dublin-core/dcmi-terms/#hasFormat
+isVersionOf,https://dublincore.org/specifications/dublin-core/dcmi-terms/#isVersionOf
+hasVersion,https://dublincore.org/specifications/dublin-core/dcmi-terms/#hasVersion
+replaces,https://dublincore.org/specifications/dublin-core/dcmi-terms/#replaces
+isReplacedBy,https://dublincore.org/specifications/dublin-core/dcmi-terms/#isReplacedBy
+references, https://dublincore.org/specifications/dublin-core/dcmi-terms/#references
+isReferencedBy,https://dublincore.org/specifications/dublin-core/dcmi-terms/#isReferencedBy
+requires,https://dublincore.org/specifications/dublin-core/dcmi-terms/#requires
+isRequiredBy,https://dublincore.org/specifications/dublin-core/dcmi-terms/#isRequiredBy
+wasDerivedFrom,https://www.w3.org/TR/prov-o/#wasDerivedFrom
+wasInfluencedBy,https://www.w3.org/TR/prov-o/#wasInfluencedBy
+wasQuotedFrom,https://www.w3.org/TR/prov-o/#wasQuotedFrom
+wasRevisionOf,https://www.w3.org/TR/prov-o/#wasRevisionOf
+hadPrimarySource,https://www.w3.org/TR/prov-o/#hadPrimarySource
+alternateOf,https://www.w3.org/TR/prov-o/#alternateOf
+specialisationOf,https://www.w3.org/TR/prov-o/#specializationOf
