@@ -6,6 +6,7 @@ import logging
 import os
 
 from ckan.views.admin import _get_sysadmins
+from ckan.model import Session
 from ckanapi import LocalCKAN, ValidationError
 from ckanext.invalid_uris.helpers import valid_uri
 from ckanext.vocabulary_services import model
@@ -130,5 +131,42 @@ def init_db_cmd():
     click.secho(u"Vocabulary services tables are setup", fg=u"green")
 
 
+@click.command(u"vocabulary-services-update-db")
+def update_db_cmd():
+    """
+    Update database tables for vocabulary.
+    """
+    click.secho(u"Initializing vocabulary services tables", fg=u"green")
+
+    try:
+        expected_cols = model.vocabulary_service_table.columns.keys()
+        current_cols = Session.execute('select * from vocabulary_service where false').keys()
+
+        for col in expected_cols:
+            if col not in current_cols:
+                type = model.vocabulary_service_table.columns[col].type
+                nullable = model.vocabulary_service_table.columns[col].nullable
+                alter_table_query = 'alter table vocabulary_service add column %s %s' % (col, type)
+                Session.execute(alter_table_query)
+                Session.commit()
+
+                if not nullable:
+                    # Add a dummy value to null col, and change it.
+                    dummy_null_query = 'update vocabulary_service set %s = \' \'' % col
+                    Session.execute(dummy_null_query)
+                    Session.commit()
+
+                    # Set the field to null.
+                    nullable_query = 'not null' if not nullable else ''
+                    alter_table_query = 'alter table vocabulary_service alter column %s set %s' % (col, nullable_query)
+                    Session.execute(alter_table_query)
+                    Session.commit()
+
+    except Exception as e:
+        log.error(str(e))
+
+    click.secho(u"Vocabulary services tables are updated", fg=u"green")
+
+
 def get_commands():
-    return [init_db_cmd, refresh_cmd]
+    return [init_db_cmd, refresh_cmd, update_db_cmd]
