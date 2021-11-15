@@ -23,6 +23,8 @@ def vocabulary_service_create(context, data_dict):
         type=data_dict.get('type', ''),
         title=data_dict.get('title', ''),
         name=data_dict.get('name', ''),
+        schema=data_dict.get('schema', ''),
+        linked_schema_field=data_dict.get('linked_schema_field', ''),
         uri=data_dict.get('uri', ''),
         update_frequency=data_dict.get('update_frequency', ''),
         allow_duplicate_terms=allow_duplicate_terms,

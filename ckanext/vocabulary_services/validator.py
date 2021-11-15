@@ -20,10 +20,22 @@ def not_empty(key, data, errors):
 
 def validate_vocabulary_service(context, vocabulary_data, is_update=False):
 
-    errors = {'title': [], 'name': [], 'type': [], 'uri': [], 'update_frequency': []}
+    errors = {'title': [], 'schema': [], 'linked_schema_field': [], 'name': [], 'type': [], 'uri': [], 'update_frequency': []}
 
     # Check title
     not_empty('title', vocabulary_data, errors)
+
+    # Check schema
+    not_empty('schema', vocabulary_data, errors)
+
+    # Check schema
+    not_empty('linked_schema_field', vocabulary_data, errors)
+    # Validate if schema field exist.
+
+
+    # Only check if this field is not already in use.
+    if len(errors.get('linked_schema_field')) == 0 and model.VocabularyService.name_exists(vocabulary_data['linked_schema_field']) and not is_update:
+        errors['linked_schema_field'].append(tk._('Linked schema field already exists'))
 
     # Check name
     not_empty('name', vocabulary_data, errors)

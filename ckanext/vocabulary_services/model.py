@@ -61,10 +61,12 @@ class VocabularyService(DomainObject):
     """A VocabularyService object represents an external vocabulary
     used for populating and controlling a metadata schema field"""
 
-    def __init__(self, type=None, title=None, name=None, uri=None, update_frequency=None, allow_duplicate_terms=False, is_hierarchical=False):
+    def __init__(self, type=None, title=None, name=None, schema=None, linked_schema_field=None, uri=None, update_frequency=None, allow_duplicate_terms=False, is_hierarchical=False):
         self.type = type
         self.title = title
         self.name = name
+        self.schema = schema
+        self.linked_schema_field = linked_schema_field
         self.uri = uri
         self.update_frequency = update_frequency
         self.allow_duplicate_terms = allow_duplicate_terms
@@ -93,6 +95,12 @@ class VocabularyService(DomainObject):
         '''Returns true if there is a vocabulary with the same name (case insensitive)'''
         query = meta.Session.query(cls)
         return query.filter(func.lower(cls.name) == func.lower(name)).first() is not None
+
+    @classmethod
+    def name_linked_schema_field_exists(cls, linked_schema_field):
+        '''Returns true if there is a vocabulary with the same linked_schema_field (case insensitive)'''
+        query = meta.Session.query(cls)
+        return query.filter(func.lower(cls.linked_schema_field) == func.lower(linked_schema_field)).first() is not None
 
     @classmethod
     def get_by_name(cls, name):
