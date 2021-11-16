@@ -34,8 +34,7 @@ def secure_vocabulary_record(context, data_dict):
 
             lookup_field = secure_vocab_config.get('lookup_field', '')
             display_fields = secure_vocab_config.get('display_fields', '')
-
-            csv_rows = csv.DictReader(open(secure_filepath))
+            csv_rows = csv.DictReader(open(secure_filepath, 'r', encoding='utf-8-sig'))
             for row in map(dict, csv_rows):
                 if row[lookup_field] == query:
                     result = {field: row[field] for field in display_fields}
