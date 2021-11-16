@@ -76,7 +76,7 @@ def secure_vocabulary_search(context, data_dict):
             alt_search_display = secure_vocab_config.get('alt_search_display_fields')
             search_fields = secure_vocab_config.get('search_fields')
 
-            csv_rows = csv.DictReader(open(secure_filepath))
+            csv_rows = csv.DictReader(open(secure_filepath, 'r', encoding='utf-8-sig'))
             for row in map(dict, csv_rows):
                 # Check to see if result limit has been reached
                 if len(results) >= limit:
