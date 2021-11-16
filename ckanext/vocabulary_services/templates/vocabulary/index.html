@@ -26,9 +26,9 @@
     {%
       set schemas = [
         {'text': 'Please select a schema', 'value': ''},
-        {'text': 'Dataset', 'value': 'qdes_ckan_dataset__dataset_fields'},
-        {'text': 'Data service', 'value': 'qdes_dataservice__dataset_fields'},
-        {'text': 'Distribution', 'value': 'qdes_ckan_dataset__resource_fields'}
+        {'text': 'Dataset', 'value': 'dataset__dataset_fields'},
+        {'text': 'Data service', 'value': 'dataservice__dataset_fields'},
+        {'text': 'Distribution', 'value': 'dataset__resource_fields'}
       ]
     %}
     {{ form.select(

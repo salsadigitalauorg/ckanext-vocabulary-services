@@ -98,9 +98,9 @@ def get_linked_schema_field_options(existing_vocab_services):
         'dataservice'
     ]
     fields = {
-        'qdes_ckan_dataset__dataset_fields': [],
-        'qdes_dataservice__dataset_fields': [],
-        'qdes_ckan_dataset__resource_fields': []
+        'dataset__dataset_fields': [],
+        'dataservice__dataset_fields': [],
+        'dataset__resource_fields': []
     }
     existing_field_names = [service.linked_schema_field for service in existing_vocab_services if len(service.linked_schema_field.strip()) > 0]
     for package_type in package_types:
@@ -109,10 +109,10 @@ def get_linked_schema_field_options(existing_vocab_services):
 
         if package_type == 'dataset':
             resource_fields = schema.get('resource_fields', [])
-            fields['qdes_ckan_dataset__dataset_fields'] = _extract_vocab_field_from_schema(dataset_fields, existing_field_names)
-            fields['qdes_ckan_dataset__resource_fields'] = _extract_vocab_field_from_schema(resource_fields, existing_field_names)
+            fields['dataset__dataset_fields'] = _extract_vocab_field_from_schema(dataset_fields, existing_field_names)
+            fields['dataset__resource_fields'] = _extract_vocab_field_from_schema(resource_fields, existing_field_names)
         else:
-            fields['qdes_dataservice__dataset_fields'] = _extract_vocab_field_from_schema(dataset_fields, existing_field_names)
+            fields['dataservice__dataset_fields'] = _extract_vocab_field_from_schema(dataset_fields, existing_field_names)
 
     return fields
 
