@@ -34,9 +34,8 @@ def secure_vocabulary_record(context, data_dict):
 
             lookup_field = secure_vocab_config.get('lookup_field', '')
             display_fields = secure_vocab_config.get('display_fields', '')
-
-            csv_rows = csv.DictReader(open(secure_filepath))
-            for row in map(dict, csv_rows):
+            csv_rows = csv.DictReader(open(secure_filepath, 'r', encoding='utf-8-sig'))
+            for row in csv_rows:
                 if row[lookup_field] == query:
                     result = {field: row[field] for field in display_fields}
                     break
@@ -77,8 +76,8 @@ def secure_vocabulary_search(context, data_dict):
             alt_search_display = secure_vocab_config.get('alt_search_display_fields')
             search_fields = secure_vocab_config.get('search_fields')
 
-            csv_rows = csv.DictReader(open(secure_filepath))
-            for row in map(dict, csv_rows):
+            csv_rows = csv.DictReader(open(secure_filepath, 'r', encoding='utf-8-sig'))
+            for row in csv_rows:
                 # Check to see if result limit has been reached
                 if len(results) >= limit:
                     break
@@ -91,7 +90,7 @@ def secure_vocabulary_search(context, data_dict):
                             }
                         else:
                             result_dict = {
-                                "value":search_display_fields.get('value', '').format(**row),
+                                "value": search_display_fields.get('value', '').format(**row),
                                 "name": search_display_fields.get('name', '').format(**row)
                             }
                         # Check if result already exists before adding it to results list
