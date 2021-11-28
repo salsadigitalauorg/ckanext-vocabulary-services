@@ -19,8 +19,9 @@ jQuery(document).ready(function () {
 
     // Update name field.
     $linkedSchemaFieldEl.change(function (e) {
-        console.log($(this).find('option:selected'));
-        console.log($(this).find('option:selected').attr('data-name'));
         $nameEl.val($(this).find('option:selected').attr('data-name'));
     });
+
+    // Enable select2.
+    $linkedSchemaFieldEl.select2();
 });

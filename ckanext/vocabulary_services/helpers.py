@@ -121,22 +121,22 @@ def _extract_vocab_field_from_schema(schema_fields, existing_field_names):
     '''
     Get all fields that has vocabulary_service_name.
     '''
-    def extract_vocab(vocab_name, field_name):
+    def extract_vocab(vocab_name, field_name, sf):
         if vocab_name and field_name not in existing_field_names:
             vocab_fields.append({
-                'text': schema_field.get('label'),
-                'name': schema_field.get('vocabulary_service_name'),
-                'value': schema_field.get('field_name')
+                'text': sf.get('label'),
+                'name': sf.get('vocabulary_service_name'),
+                'value': sf.get('field_name')
             })
 
     vocab_fields = []
     for schema_field in schema_fields:
-        extract_vocab(schema_field.get('vocabulary_service_name', False), schema_field.get('field_name', False))
+        extract_vocab(schema_field.get('vocabulary_service_name', False), schema_field.get('field_name', False), schema_field)
 
         schema_field_groups = schema_field.get('field_group', False)
         if schema_field_groups:
             for schema_field_group in schema_field_groups:
-                extract_vocab(schema_field_group.get('vocabulary_service_name', False), schema_field_group.get('field_name', False))
+                extract_vocab(schema_field_group.get('vocabulary_service_name', False), schema_field_group.get('field_name', False), schema_field_group)
 
     # Sort the value.
     return sorted(vocab_fields, key=lambda d: d['text'])
