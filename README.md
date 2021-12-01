@@ -17,7 +17,7 @@ This will create the following two tables:
 
 Update the database tables:
 
-    ckan -c path/to/ckan.ini vocabulary-services-update-db
+    ckan db upgrade -p vocabulary_services
 
 *(NOT to be confused with the CKAN core `vocabulary` table)*
 
