@@ -31,4 +31,4 @@ def upgrade():
 
 def downgrade():
     op.drop_column('vocabulary_service', 'schema')
-    op.drop_column('vocabulary_service_term', 'linked_schema_field')
+    op.drop_column('vocabulary_service', 'linked_schema_field')
