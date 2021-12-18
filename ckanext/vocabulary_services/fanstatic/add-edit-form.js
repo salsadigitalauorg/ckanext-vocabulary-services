@@ -23,5 +23,6 @@ jQuery(document).ready(function () {
     });
 
     // Enable select2.
+    $vocabFormEl.find('#schema').change();
     $linkedSchemaFieldEl.select2();
 });

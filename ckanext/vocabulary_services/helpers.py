@@ -87,7 +87,7 @@ def render_hierarchical(terms_list):
     return parents
 
 
-def get_linked_schema_field_options(existing_vocab_services):
+def get_linked_schema_field_options(existing_vocab_services, force_include_vocab):
     '''
     Get all available options for linked_schema_field,
     any field that already registered in existing_vocab_services
@@ -102,17 +102,24 @@ def get_linked_schema_field_options(existing_vocab_services):
         'dataservice__dataset_fields': [],
         'dataset__resource_fields': []
     }
-    existing_field_names = [service.linked_schema_field for service in existing_vocab_services if len(service.linked_schema_field.strip()) > 0]
+    def existing_field_names(package_type):
+        field_names = [service.linked_schema_field for service in existing_vocab_services if len(service.linked_schema_field.strip()) > 0 and service.schema == package_type]
+
+        if force_include_vocab and len(force_include_vocab.linked_schema_field.strip()) > 0 and force_include_vocab.linked_schema_field in field_names:
+            field_names.remove(force_include_vocab.linked_schema_field)
+
+        return field_names
+
     for package_type in package_types:
         schema = h.scheming_get_dataset_schema(package_type)
         dataset_fields = schema.get('dataset_fields', [])
 
         if package_type == 'dataset':
             resource_fields = schema.get('resource_fields', [])
-            fields['dataset__dataset_fields'] = _extract_vocab_field_from_schema(dataset_fields, existing_field_names)
-            fields['dataset__resource_fields'] = _extract_vocab_field_from_schema(resource_fields, existing_field_names)
+            fields['dataset__dataset_fields'] = _extract_vocab_field_from_schema(dataset_fields, existing_field_names('dataset__dataset_fields'))
+            fields['dataset__resource_fields'] = _extract_vocab_field_from_schema(resource_fields, existing_field_names('dataset__resource_fields'))
         else:
-            fields['dataservice__dataset_fields'] = _extract_vocab_field_from_schema(dataset_fields, existing_field_names)
+            fields['dataservice__dataset_fields'] = _extract_vocab_field_from_schema(dataset_fields, existing_field_names('dataservice__dataset_fields'))
 
     return fields
 
@@ -122,7 +129,7 @@ def _extract_vocab_field_from_schema(schema_fields, existing_field_names):
     Get all fields that has vocabulary_service_name.
     '''
     def extract_vocab(vocab_name, field_name, sf):
-        if vocab_name and field_name not in existing_field_names:
+        if vocab_name and field_name not in existing_field_names and sf.get('vocabulary_service_name', '') != 'point-of-contact':
             vocab_fields.append({
                 'text': sf.get('label'),
                 'name': sf.get('vocabulary_service_name'),
