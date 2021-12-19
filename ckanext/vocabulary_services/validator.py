@@ -7,6 +7,7 @@ from ckanext.vocabulary_services import model
 from ckanext.invalid_uris.helpers import valid_uri
 
 log = logging.getLogger(__name__)
+h = tk.h
 
 def not_empty(key, data, errors):
     """
@@ -20,10 +21,36 @@ def not_empty(key, data, errors):
 
 def validate_vocabulary_service(context, vocabulary_data, is_update=False):
 
-    errors = {'title': [], 'name': [], 'type': [], 'uri': [], 'update_frequency': []}
+    errors = {'title': [], 'schema': [], 'linked_schema_field': [], 'name': [], 'type': [], 'uri': [], 'update_frequency': []}
 
     # Check title
     not_empty('title', vocabulary_data, errors)
+
+    # Check schema
+    not_empty('schema', vocabulary_data, errors)
+
+    # Check schema
+    not_empty('linked_schema_field', vocabulary_data, errors)
+    # Validate if schema field exist.
+    schema_name = vocabulary_data.get('schema').split('__')
+    schema = h.scheming_get_dataset_schema(schema_name[0])
+    schema_fields = schema.get(schema_name[1])
+    field_exist = False
+    for field in schema_fields:
+        if field.get('field_group', False):
+            for field_group in field.get('field_group'):
+                if field_group.get('field_name') == vocabulary_data.get('linked_schema_field'):
+                    field_exist = True
+        else:
+            if field.get('field_name') == vocabulary_data.get('linked_schema_field'):
+                field_exist = True
+
+    if not field_exist:
+        errors['linked_schema_field'].append(tk._('Linked schema field not found'))
+
+    # Only check if this field is not already in use.
+    if len(errors.get('linked_schema_field')) == 0 and model.VocabularyService.name_exists(vocabulary_data['linked_schema_field']) and not is_update:
+        errors['linked_schema_field'].append(tk._('Linked schema field already exists'))
 
     # Check name
     not_empty('name', vocabulary_data, errors)

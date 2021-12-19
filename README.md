@@ -15,6 +15,10 @@ This will create the following two tables:
     vocabulary_service
     vocabulary_service_term
 
+Update the database tables:
+
+    ckan db upgrade -p vocabulary_services
+
 *(NOT to be confused with the CKAN core `vocabulary` table)*
 
 ## Background tasks

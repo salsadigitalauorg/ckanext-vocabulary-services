@@ -1,0 +1,6 @@
+add_edit_form:
+  contents:
+    - add-edit-form.js
+  extra:
+    preload:
+      - vendor/jquery

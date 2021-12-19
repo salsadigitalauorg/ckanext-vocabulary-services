@@ -3,6 +3,8 @@
 {% import 'macros/form.html' as form %}
 
 {% block primary_content_inner %}
+  {% asset 'vocabulary_services/add_edit_form' %}
+
   {% if is_update %}
     <h2>Edit vocabulary service: {{ data.title }}</h2>
   {% else %}
@@ -19,6 +21,36 @@
       error=errors.title,
       classes=['control-medium'],
       is_required=True
+    ) }}
+
+    {%
+      set schemas = [
+        {'text': 'Please select a schema', 'value': ''},
+        {'text': 'Dataset', 'value': 'dataset__dataset_fields'},
+        {'text': 'Data service', 'value': 'dataservice__dataset_fields'},
+        {'text': 'Distribution', 'value': 'dataset__resource_fields'}
+      ]
+    %}
+    {{ form.select(
+        'schema',
+        label=_('Schema'),
+        options=schemas,
+        selected=data.schema,
+        error=errors.schema,
+        is_required=True
+    ) }}
+
+    {% set linked_schema_field = h.get_linked_schema_field_options(services, data) %}
+    <script>
+      var linked_schema_field = {{ linked_schema_field|tojson }}
+    </script>
+    {{ form.select(
+        'linked_schema_field',
+        label=_('Linked schema field'),
+        options=linked_schema_field[data.schema] if data.linked_schema_field else [],
+        selected=data.linked_schema_field,
+        error=errors.linked_schema_field,
+        is_required=True
     ) }}
 
     {{ form.input(
@@ -125,6 +157,19 @@
               </strong>
               <br />
               <small>
+                  {% if service.schema|trim|length > 0 %}
+                    <strong>Schema:</strong>&nbsp;
+                      {%- for schema in schemas -%}
+                        {%- if schema.value == service.schema -%}
+                          {{- schema.text -}}
+                        {%- endif -%}
+                      {%- endfor -%}
+                    <br />
+                  {%- endif -%}
+                  {% if service.schema|trim|length > 0 %}
+                    <strong>Linked schema field:</strong> {{ service.linked_schema_field }}
+                    <br />
+                  {%- endif -%}
                   <strong>Name:</strong> {{ service.name }}
                   <br />
                   <strong>Allow duplicate terms:</strong> {{ "Yes" if service.allow_duplicate_terms else "No" }}
