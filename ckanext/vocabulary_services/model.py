@@ -50,6 +50,8 @@ vocabulary_service_term_table = Table('vocabulary_service_term', meta.metadata,
                                              nullable=True),
                                       Column('definition', types.UnicodeText,
                                              nullable=True),
+                                      Column('quantity_kind', types.UnicodeText,
+                                             nullable=True),
                                       Column('date_created', types.DateTime,
                                              default=datetime.datetime.utcnow()),
                                       Column('date_modified', types.DateTime,
@@ -119,12 +121,13 @@ class VocabularyServiceTerm(DomainObject):
     """A VocabularyServiceTerm object represents a term from an external vocabulary
     used for populating and controlling a metadata schema field"""
 
-    def __init__(self, vocabulary_service_id=None, label=None, uri=None, definition=None, broader=None):
+    def __init__(self, vocabulary_service_id=None, label=None, uri=None, definition=None, broader=None, quantity_kind=None):
         self.vocabulary_service_id = vocabulary_service_id
         self.label = label
         self.uri = uri
         self.broader = broader
         self.definition = definition
+        self.quantity_kind = quantity_kind
 
     @classmethod
     def get(cls, reference):
