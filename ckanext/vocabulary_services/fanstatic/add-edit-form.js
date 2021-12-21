@@ -12,7 +12,14 @@ jQuery(document).ready(function () {
         $linkedSchemaFieldEl.html('');
         if (options && options.length > 0) {
             for (var i = 0; i < options.length; i++) {
-                $linkedSchemaFieldEl.append('<option value="' + options[i].value + '" data-name="' + options[i].name + '">' + options[i].text + '</option>')
+                var selected = '';
+                if (linked_schema_field_data === options[i].value && schema_data === $(this).val()) {
+                    selected = 'selected';
+                    // Reset schema data. The case when user is moving the selection to other dataset
+                    // and back to this dataset, the selection should be not default to the edit value.
+                    schema_data = '';
+                }
+                $linkedSchemaFieldEl.append('<option value="' + options[i].value + '" data-name="' + options[i].name + '" ' + selected +'>' + options[i].text + '</option>')
             }
         }
 
