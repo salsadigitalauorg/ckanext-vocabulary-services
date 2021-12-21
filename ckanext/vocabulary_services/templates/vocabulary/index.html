@@ -43,6 +43,8 @@
     {% set linked_schema_field = h.get_linked_schema_field_options(services, data) %}
     <script>
       var linked_schema_field = {{ linked_schema_field|tojson }}
+      var linked_schema_field_data = "{{ data.linked_schema_field }}"
+      var schema_data = "{{ data.schema }}"
     </script>
     {{ form.select(
         'linked_schema_field',
