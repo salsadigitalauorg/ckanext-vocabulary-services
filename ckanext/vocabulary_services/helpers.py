@@ -87,6 +87,15 @@ def render_hierarchical(terms_list):
     return parents
 
 
+def get_linked_schema_field_label(all_linked_schema_fields, schema, field_name):
+    fields = all_linked_schema_fields.get(schema, [])
+    for field in fields:
+        if field.get('value') == field_name:
+            return field.get('text')
+
+    return field_name
+
+
 def get_linked_schema_field_options(existing_vocab_services, force_include_vocab):
     '''
     Get all available options for linked_schema_field,

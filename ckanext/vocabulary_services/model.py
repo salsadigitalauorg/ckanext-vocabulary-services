@@ -99,12 +99,6 @@ class VocabularyService(DomainObject):
         return query.filter(func.lower(cls.name) == func.lower(name)).first() is not None
 
     @classmethod
-    def name_linked_schema_field_exists(cls, linked_schema_field):
-        '''Returns true if there is a vocabulary with the same linked_schema_field (case insensitive)'''
-        query = meta.Session.query(cls)
-        return query.filter(func.lower(cls.linked_schema_field) == func.lower(linked_schema_field)).first() is not None
-
-    @classmethod
     def get_by_name(cls, name):
         '''Returns true if there is a vocabulary with the same name (case insensitive)'''
         query = meta.Session.query(cls)

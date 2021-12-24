@@ -151,6 +151,7 @@
         <th width="25%">Actions</th>
       </thead>
       <tbody>
+        {% set all_linked_schema_field = h.get_linked_schema_field_options([], []) %}
         {% for service in services %}
         <tr class="{{ 'even' if loop.index % 2 == 0 else 'odd' }}">
           <td>
@@ -169,7 +170,7 @@
                     <br />
                   {%- endif -%}
                   {% if service.schema|trim|length > 0 %}
-                    <strong>Linked schema field:</strong> {{ service.linked_schema_field }}
+                    <strong>Linked schema field:</strong> {{ h.get_linked_schema_field_label(all_linked_schema_field, service.schema, service.linked_schema_field) }}
                     <br />
                   {%- endif -%}
                   <strong>Name:</strong> {{ service.name }}
