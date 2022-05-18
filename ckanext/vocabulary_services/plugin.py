@@ -56,6 +56,7 @@ class VocabularyServicesPlugin(plugins.SingletonPlugin):
             'scheming_vocabulary_service_choices': helpers.scheming_vocabulary_service_choices,
             'scheming_vocabulary_service_hierarchical': helpers.scheming_vocabulary_service_hierarchical,
             'get_linked_schema_field_options': helpers.get_linked_schema_field_options,
+            'get_linked_schema_field_label': helpers.get_linked_schema_field_label
         }
 
     # IClick
