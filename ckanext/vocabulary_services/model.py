@@ -5,7 +5,7 @@ from ckan.model import types as _types
 from sqlalchemy import types, Column, Table, func, ForeignKey
 from ckan.model.domain_object import DomainObject
 from sqlalchemy.orm import relation
-from sqlalchemy import or_
+from sqlalchemy import or_, and_
 
 
 vocabulary_service_table = Table('vocabulary_service', meta.metadata,
@@ -103,10 +103,10 @@ class VocabularyService(DomainObject):
         '''Returns true if there is a vocabulary with the same schema and linked_schema_field (case insensitive)'''
         query = meta.Session.query(cls)
         return query\
-                   .filter(func.lower(cls.schema) == func.lower(schema))\
-                   .filter(func.lower(cls.linked_schema_field) == func.lower(linked_schema_field))\
-                   .filter(func.lower(cls.name) == func.lower(name))\
-                   .first() is not None
+            .filter(func.lower(cls.schema) == func.lower(schema))\
+            .filter(func.lower(cls.linked_schema_field) == func.lower(linked_schema_field))\
+            .filter(func.lower(cls.name) == func.lower(name))\
+            .first() is not None
 
     @classmethod
     def get_by_name(cls, name):
@@ -143,7 +143,7 @@ class VocabularyServiceTerm(DomainObject):
 
     @classmethod
     def get_by_label_or_uri(cls, vocabulary_service_id, label, uri):
-        '''Returns a VocabularyServiceTerm object referenced by its id.'''
+        '''Returns a VocabularyServiceTerm object referenced by its label or uri.'''
         query = meta.Session.query(cls)\
             .filter(cls.vocabulary_service_id == vocabulary_service_id)\
             .filter(or_(func.lower(cls.label) == func.lower(label), func.lower(cls.uri) == func.lower(uri)))
@@ -152,11 +152,11 @@ class VocabularyServiceTerm(DomainObject):
         return vocabulary_service_term
 
     @classmethod
-    def get_by_uri(cls, vocabulary_service_id, uri):
-        '''Returns a VocabularyServiceTerm object referenced by its uri.'''
+    def get_by_label_and_uri(cls, vocabulary_service_id, label, uri):
+        '''Returns a VocabularyServiceTerm object referenced by its label and uri.'''
         query = meta.Session.query(cls)\
             .filter(cls.vocabulary_service_id == vocabulary_service_id)\
-            .filter(func.lower(cls.uri) == func.lower(uri))
+            .filter(and_(func.lower(cls.label) == func.lower(label), func.lower(cls.uri) == func.lower(uri)))
         vocabulary_service_term = query.first()
 
         return vocabulary_service_term
