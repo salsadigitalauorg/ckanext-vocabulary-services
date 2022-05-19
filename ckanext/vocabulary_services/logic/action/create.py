@@ -48,7 +48,8 @@ def vocabulary_service_term_create(context, data_dict):
         label=data_dict.get('label', ''),
         uri=data_dict.get('uri', ''),
         broader=data_dict.get('broader', ''),
-        definition=data_dict.get('definition', '')
+        definition=data_dict.get('definition', ''),
+        quantity_kind=data_dict.get('quantity_kind', '')
     )
 
     session.add(term)
@@ -82,11 +83,11 @@ def vocabulary_service_term_upsert(context, data_dict):
 
         if existing_term:
             # Check if something has changed - if so, update it, otherwise skip it...
-            if (existing_term.label != label
-                  or existing_term.uri != uri
-                  or existing_term.definition != definition
-                  or existing_term.broader != broader
-                  or existing_term.quantity_kind != quantity_kind):
+            if (existing_term.label != label or
+                existing_term.uri != uri or
+                existing_term.definition != definition or
+                existing_term.broader != broader or
+                existing_term.quantity_kind != quantity_kind):
                 # Update the term
                 existing_term.label = label
                 existing_term.uri = uri
