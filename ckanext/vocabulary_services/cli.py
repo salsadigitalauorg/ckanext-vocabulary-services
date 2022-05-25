@@ -6,6 +6,7 @@ import logging
 import os
 
 from ckan.views.admin import _get_sysadmins
+from ckan.model import Session
 from ckanapi import LocalCKAN, ValidationError
 from ckanext.invalid_uris.helpers import valid_uri
 from ckanext.vocabulary_services import model
@@ -128,7 +129,6 @@ def init_db_cmd():
         log.error(str(e))
 
     click.secho(u"Vocabulary services tables are setup", fg=u"green")
-
 
 def get_commands():
     return [init_db_cmd, refresh_cmd]

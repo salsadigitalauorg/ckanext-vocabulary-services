@@ -23,6 +23,8 @@ def vocabulary_service_create(context, data_dict):
         type=data_dict.get('type', ''),
         title=data_dict.get('title', ''),
         name=data_dict.get('name', ''),
+        schema=data_dict.get('schema', ''),
+        linked_schema_field=data_dict.get('linked_schema_field', ''),
         uri=data_dict.get('uri', ''),
         update_frequency=data_dict.get('update_frequency', ''),
         allow_duplicate_terms=allow_duplicate_terms,
@@ -46,7 +48,8 @@ def vocabulary_service_term_create(context, data_dict):
         label=data_dict.get('label', ''),
         uri=data_dict.get('uri', ''),
         broader=data_dict.get('broader', ''),
-        definition=data_dict.get('definition', '')
+        definition=data_dict.get('definition', ''),
+        quantity_kind=data_dict.get('quantity_kind', '')
     )
 
     session.add(term)
@@ -65,53 +68,36 @@ def vocabulary_service_term_upsert(context, data_dict):
     label = data_dict.get('label', None)
     uri = data_dict.get('uri', None)
     definition = data_dict.get('definition', None)
+    quantity_kind = data_dict.get('quantity_kind', None)
     broader = data_dict.get('broader', None)
 
     if vocabulary_service_id and label and uri:
         existing_term = None
-
-        if VocabularyService.is_allow_duplicate_terms(vocabulary_service_id):
-            # Load any term for the given vocabulary_service.id with matching uri
-            existing_term = VocabularyServiceTerm.get_by_uri(vocabulary_service_id, uri)
+        allow_duplicate_terms = VocabularyService.is_allow_duplicate_terms(vocabulary_service_id)
+        if allow_duplicate_terms:
+            # Load any term for the given vocabulary_service.id with matching label AND uri
+            existing_term = VocabularyServiceTerm.get_by_label_and_uri(vocabulary_service_id, label, uri)
         else:
             # Load any term for the given vocabulary_service.id with matching label OR uri
             existing_term = VocabularyServiceTerm.get_by_label_or_uri(vocabulary_service_id, label, uri)
 
         if existing_term:
-            # If duplicate terms are allowed.
-            if VocabularyService.is_allow_duplicate_terms(vocabulary_service_id):
-                if (existing_term.label == label) and (existing_term.uri != uri):
-                    # If label is the same but uri is different, let's create them.
-                    vocabulary_service_term_create(context, data_dict)
-                elif (existing_term.label != label
-                      or existing_term.definition != definition
-                      or existing_term.broader != broader) and existing_term.uri == uri:
-                    # Update the term label if the URI is the same and label different.
-                    # Update the term definition if the URI is the same and definition different.
-                    existing_term.label = label
-                    existing_term.broader = broader
-                    existing_term.definition = definition
-                    existing_term.date_modified = datetime.utcnow()
+            # Check if something has changed - if so, update it, otherwise skip it...
+            if (existing_term.label != label or
+                existing_term.uri != uri or
+                existing_term.definition != definition or
+                existing_term.broader != broader or
+                existing_term.quantity_kind != quantity_kind):
+                # Update the term
+                existing_term.label = label
+                existing_term.uri = uri
+                existing_term.broader = broader
+                existing_term.definition = definition
+                existing_term.quantity_kind = quantity_kind
+                existing_term.date_modified = datetime.utcnow()
 
-                    session.add(existing_term)
-                    session.commit()
-                else:
-                    return True
-            else:
-                # Check if something has changed - if so, update it, otherwise skip it...
-                if existing_term.label != label \
-                        or existing_term.uri != uri \
-                        or existing_term.definition != definition \
-                        or existing_term.broader != broader:
-                    # Update the term
-                    existing_term.label = label
-                    existing_term.uri = uri
-                    existing_term.broader = broader
-                    existing_term.definition = definition
-                    existing_term.date_modified = datetime.utcnow()
-
-                    session.add(existing_term)
-                    session.commit()
+                session.add(existing_term)
+                session.commit()
         else:
             vocabulary_service_term_create(context, data_dict)
 
