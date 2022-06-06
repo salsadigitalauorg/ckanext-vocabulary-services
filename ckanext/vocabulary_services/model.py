@@ -34,6 +34,7 @@ vocabulary_service_table = Table('vocabulary_service', meta.metadata,
                                  Column('date_modified', types.DateTime,
                                         default=datetime.datetime.utcnow()),
                                  Column('date_last_processed', types.DateTime),
+                                 Column('data_type', types.UnicodeText, nullable=True),
                                  )
 
 vocabulary_service_term_table = Table('vocabulary_service_term', meta.metadata,
