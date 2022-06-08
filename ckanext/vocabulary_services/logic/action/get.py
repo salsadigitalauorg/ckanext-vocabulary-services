@@ -78,6 +78,7 @@ def sparql_json_vocabulary_terms(context, data_dict):
                         definition = binding.get('definition', {})
                         broader = binding.get('broader', {})
                         quantity_kind = binding.get('quantitykind', {})
+                        data_type = binding.get('datatype', {})
                         if concept and pref_label:
                             # Create the term in the internal vocabulary service
                             get_action('vocabulary_service_term_upsert')(context, {
@@ -86,7 +87,8 @@ def sparql_json_vocabulary_terms(context, data_dict):
                                 'uri': concept['value'],
                                 'definition': definition.get('value', None),
                                 'broader': broader.get('value', None),
-                                'quantity_kind': quantity_kind.get('value', None)
+                                'quantity_kind': quantity_kind.get('value', None),
+                                'data_type': data_type.get('value', None)
                             })
                     return True
 
