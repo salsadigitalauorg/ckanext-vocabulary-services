@@ -5,7 +5,7 @@ import codecs
 
 from ckan.plugins.toolkit import get_action
 from ckanext.vocabulary_services import helpers, model
-from pprint import pformat
+from ckanext.invalid_uris.helpers import valid_uri as uri_response
 from sqlalchemy import or_
 
 log = logging.getLogger(__name__)
@@ -56,14 +56,14 @@ def sparql_json_vocabulary_terms(context, data_dict):
 
     if service_id and service_uri:
         try:
-            r = requests.get(service_uri)
+            result = uri_response(service_uri)
+            
+            log.debug('>>> Request status code: %s' % result.get('status_code'))
 
-            log.debug('>>> Request status code: %s' % r.status_code)
-
-            if r.status_code == 200:
+            if result.get('status_code') == 200 and result.get('response'):
                 log.debug('>>> Finished fetching vocabulary from SPARQL+JSON service.')
 
-                response = r.json()
+                response = result.get('response').json()
 
                 # If you open the https://vocabs.gsq.digital... URI above, you can see that the terms are
                 # contained in the 'results' dict element, and the 'bindings' element beneath that.
