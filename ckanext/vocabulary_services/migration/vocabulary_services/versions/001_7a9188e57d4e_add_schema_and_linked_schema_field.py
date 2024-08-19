@@ -51,6 +51,7 @@ def upgrade():
                 sa.Column('date_modified', sa.DateTime, default=datetime.datetime.utcnow())
             )
 
+
 def downgrade():
     op.drop_table('vocabulary_service_term')
     op.drop_table('vocabulary_service')
