@@ -17,8 +17,19 @@ depends_on = None
 
 
 def upgrade():
-    op.add_column('vocabulary_service_term', sa.Column('quantity_kind', sa.UnicodeText, nullable=True))
+    # Add column with nullable = True.
+    op.add_column('vocabulary_service', sa.Column('schema', sa.UnicodeText, nullable=True))
+    op.add_column('vocabulary_service', sa.Column('linked_schema_field', sa.UnicodeText, nullable=True))
+
+    # Add default value to all null columns.
+    dummy_null_query = 'update vocabulary_service set schema = \' \'; update vocabulary_service set linked_schema_field = \' \'; '
+    op.execute(dummy_null_query)
+
+    # Set the column to nullable = False.
+    op.alter_column('vocabulary_service', 'schema', nullable=False)
+    op.alter_column('vocabulary_service', 'linked_schema_field', nullable=False)
 
 
 def downgrade():
-    op.drop_column('vocabulary_service_term', 'quantity_kind')
+    op.drop_column('vocabulary_service', 'schema')
+    op.drop_column('vocabulary_service', 'linked_schema_field')
