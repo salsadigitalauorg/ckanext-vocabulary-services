@@ -142,3 +142,11 @@ class VocabularyServiceTerm(DomainObject, BaseModel):
         vocabulary_service_term = query.first()
 
         return vocabulary_service_term
+
+    @classmethod
+    def get_terms(cls, vocabulary_service_id):
+        '''Returns VocabularyServiceTerm objects referenced by vocabulary_service_id.'''
+        query = meta.Session.query(cls).filter(cls.vocabulary_service_id == vocabulary_service_id)
+        terms = query.all()
+
+        return terms
