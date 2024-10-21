@@ -35,12 +35,14 @@ def vocabulary_service_terms(context, name):
 
     try:
         data = vocabulary_service(context, name)
-        terms = data.terms
+        if data and data.id:
+            terms = model.VocabularyServiceTerm.get_terms(data.id)
     except Exception as e:
         log.error('Vocabulary service name: {0}'.format(name))
         log.error(str(e))
 
     return terms
+
 
 def sparql_json_vocabulary_terms(context, data_dict):
     """
@@ -57,7 +59,7 @@ def sparql_json_vocabulary_terms(context, data_dict):
     if service_id and service_uri:
         try:
             result = uri_response(service_uri)
-            
+
             log.debug('>>> Request status code: %s' % result.get('status_code'))
 
             if result.get('status_code') == 200 and result.get('response'):

@@ -9,6 +9,7 @@
         <h2>{{ vocabulary.title }}</h2>
 
         <form method="post" enctype="multipart/form-data">
+            {{ h.csrf_input() }}
             <div class="form-group control-full">
                 <label class="control-label" for="field-{{ vocabulary.name }}-upload">File</label>
                 <div class="controls">
