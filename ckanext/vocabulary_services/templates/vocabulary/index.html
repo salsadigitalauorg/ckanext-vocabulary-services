@@ -12,7 +12,7 @@
   {% endif %}
 
   <form id="dataset-edit" class="dataset-form" method="post" action="{{ h.url_for('vocabulary_services.index', id=data.id) if is_update else h.url_for('vocabulary_services.index')}}" novalidate>
-
+    {{ h.csrf_input() }}
     {{ form.input(
       'title',
       id='field-title',

@@ -6,7 +6,6 @@ import logging
 import os
 
 from ckan.views.admin import _get_sysadmins
-from ckan.model import Session
 from ckanapi import LocalCKAN, ValidationError
 from ckanext.invalid_uris.helpers import valid_uri
 from ckanext.vocabulary_services import model
@@ -112,23 +111,5 @@ def refresh_cmd(ctx):
     click.secho(u"COMPLETED: vocabulary-services-refresh", fg=u"green")
 
 
-@click.command(u"vocabulary-services-init-db")
-def init_db_cmd():
-    """Initialise the database tables required for internal vocabulary services
-    """
-    click.secho(u"Initializing vocabulary services tables", fg=u"green")
-
-    try:
-        model.vocabulary_service_table.create()
-    except Exception as e:
-        log.error(str(e))
-
-    try:
-        model.vocabulary_service_term_table.create()
-    except Exception as e:
-        log.error(str(e))
-
-    click.secho(u"Vocabulary services tables are setup", fg=u"green")
-
 def get_commands():
-    return [init_db_cmd, refresh_cmd]
+    return [refresh_cmd]

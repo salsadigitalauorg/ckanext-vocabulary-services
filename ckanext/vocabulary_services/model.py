@@ -2,66 +2,37 @@ import datetime
 
 from ckan.model import meta
 from ckan.model import types as _types
-from sqlalchemy import types, Column, Table, func, ForeignKey
+from sqlalchemy import types, Column, func, ForeignKey
 from ckan.model.domain_object import DomainObject
-from sqlalchemy.orm import relation
 from sqlalchemy import or_, and_
 
-
-vocabulary_service_table = Table('vocabulary_service', meta.metadata,
-                                 Column('id', types.UnicodeText,
-                                        primary_key=True,
-                                        default=_types.make_uuid),
-                                 Column('type', types.UnicodeText,
-                                        nullable=False),
-                                 Column('title', types.UnicodeText,
-                                        nullable=False),
-                                 Column('name', types.UnicodeText,
-                                        nullable=False,
-                                        unique=True),
-                                 Column('uri', types.UnicodeText,
-                                        nullable=False),
-                                 Column('update_frequency', types.UnicodeText,
-                                        nullable=False),
-                                 Column('allow_duplicate_terms', types.Boolean,
-                                        default=False),
-                                 Column('is_hierarchical', types.Boolean,
-                                        default=False),
-                                 Column('schema', types.UnicodeText, nullable=False),
-                                 Column('linked_schema_field', types.UnicodeText, nullable=False),
-                                 Column('date_created', types.DateTime,
-                                        default=datetime.datetime.utcnow()),
-                                 Column('date_modified', types.DateTime,
-                                        default=datetime.datetime.utcnow()),
-                                 Column('date_last_processed', types.DateTime),
-                                 )
-
-vocabulary_service_term_table = Table('vocabulary_service_term', meta.metadata,
-                                      Column('id', types.UnicodeText,
-                                             primary_key=True,
-                                             default=_types.make_uuid),
-                                      Column('vocabulary_service_id', types.UnicodeText,
-                                             ForeignKey('vocabulary_service.id'), nullable=False),
-                                      Column('label', types.UnicodeText,
-                                             nullable=False),
-                                      Column('uri', types.UnicodeText,
-                                             nullable=False),
-                                      Column('broader', types.UnicodeText,
-                                             nullable=True),
-                                      Column('definition', types.UnicodeText,
-                                             nullable=True),
-                                      Column('quantity_kind', types.UnicodeText,
-                                             nullable=True),
-                                      Column('date_created', types.DateTime,
-                                             default=datetime.datetime.utcnow()),
-                                      Column('date_modified', types.DateTime,
-                                             default=datetime.datetime.utcnow()),
-                                      )
+try:
+    from ckan.plugins.toolkit import BaseModel
+except ImportError:
+    # CKAN <= 2.9
+    from ckan.model.meta import metadata
+    from sqlalchemy.ext.declarative import declarative_base
+    BaseModel = declarative_base(metadata=metadata)
 
 
-class VocabularyService(DomainObject):
+class VocabularyService(DomainObject, BaseModel):
     """A VocabularyService object represents an external vocabulary
     used for populating and controlling a metadata schema field"""
+
+    __tablename__ = "vocabulary_service"
+    id = Column(types.UnicodeText, primary_key=True, default=_types.make_uuid)
+    type = Column(types.UnicodeText, nullable=False)
+    title = Column(types.UnicodeText, nullable=False)
+    name = Column(types.UnicodeText, nullable=False, unique=True)
+    schema = Column(types.UnicodeText, nullable=False)
+    linked_schema_field = Column(types.UnicodeText, nullable=False)
+    uri = Column(types.UnicodeText, nullable=False)
+    update_frequency = Column(types.UnicodeText, nullable=False)
+    allow_duplicate_terms = Column(types.Boolean, default=False)
+    is_hierarchical = Column(types.Boolean, default=False)
+    date_created = Column(types.DateTime, default=datetime.datetime.utcnow())
+    date_modified = Column(types.DateTime, default=datetime.datetime.utcnow())
+    date_last_processed = Column(types.DateTime)
 
     def __init__(self, type=None, title=None, name=None, schema=None, linked_schema_field=None, uri=None, update_frequency=None, allow_duplicate_terms=False, is_hierarchical=False):
         self.type = type
@@ -121,9 +92,20 @@ class VocabularyService(DomainObject):
         return query.filter(cls.allow_duplicate_terms == True).filter(cls.id == reference).first() is not None
 
 
-class VocabularyServiceTerm(DomainObject):
+class VocabularyServiceTerm(DomainObject, BaseModel):
     """A VocabularyServiceTerm object represents a term from an external vocabulary
     used for populating and controlling a metadata schema field"""
+
+    __tablename__ = "vocabulary_service_term"
+    id = Column(types.UnicodeText, primary_key=True, default=_types.make_uuid)
+    vocabulary_service_id = Column(types.UnicodeText, ForeignKey('vocabulary_service.id'), nullable=False)
+    label = Column(types.UnicodeText, nullable=False)
+    uri = Column(types.UnicodeText, nullable=False)
+    broader = Column(types.UnicodeText, nullable=True)
+    definition = Column(types.UnicodeText, nullable=True)
+    quantity_kind = Column(types.UnicodeText, nullable=True)
+    date_created = Column(types.DateTime, default=datetime.datetime.utcnow())
+    date_modified = Column(types.DateTime, default=datetime.datetime.utcnow())
 
     def __init__(self, vocabulary_service_id=None, label=None, uri=None, definition=None, broader=None, quantity_kind=None):
         self.vocabulary_service_id = vocabulary_service_id
@@ -161,8 +143,10 @@ class VocabularyServiceTerm(DomainObject):
 
         return vocabulary_service_term
 
+    @classmethod
+    def get_terms(cls, vocabulary_service_id):
+        '''Returns VocabularyServiceTerm objects referenced by vocabulary_service_id.'''
+        query = meta.Session.query(cls).filter(cls.vocabulary_service_id == vocabulary_service_id)
+        terms = query.all()
 
-meta.mapper(VocabularyService, vocabulary_service_table, properties={
-    'terms': relation(lambda: VocabularyServiceTerm, order_by=lambda: VocabularyServiceTerm.label)
-})
-meta.mapper(VocabularyServiceTerm, vocabulary_service_term_table)
+        return terms
