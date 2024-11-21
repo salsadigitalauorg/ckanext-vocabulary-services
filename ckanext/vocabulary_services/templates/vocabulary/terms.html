@@ -15,30 +15,23 @@
         Last updated: {% snippet 'snippets/local_friendly_datetime.html', datetime_obj=vocabulary_service.date_last_processed %}
     </p>
 
-    <table class="table table-bordered">
-      <thead>
-        <th>Label</th>
-        <th>URI</th>
-        {% if vocabulary_service.is_hierarchical %}
-        <th>Broader term</th>
-        {% endif %}
-        <th>Definition</th>
-        <th>Quantity Kind</th>
-        <th>Created</th>
-        <th>Updated</th>
-      </thead>
+    <table class="table table-bordered table-striped">
       <tbody>
         {% for term in terms %}
-        <tr>
-          <td>{{ term.label }}</td>
-          <td>{{ term.uri }}</td>
-          {% if vocabulary_service.is_hierarchical %}
-          <td>{{ term.broader }}</td>
-          {% endif %}
-          <td>{{ term.definition }}</td>
-          <td>{{ term.quantity_kind }}</td>
-          <td>{{ term.date_created }}</td>
-          <td>{{ term.date_modified }}</td>
+        <tr class="{{ 'even' if loop.index % 2 == 0 else 'odd' }}">
+          <td>
+            <small>
+              <strong>Label:</strong> {{ term.label }}<br/>
+              <strong>URI:</strong> {{ term.uri }}<br/>
+              {% if vocabulary_service.is_hierarchical %}
+                <strong>Broader term:</strong> {{ term.broader }}<br/>
+              {% endif %}
+              <strong>Definition:</strong> {{ term.definition }}<br/>
+              <strong>Quantity Kind:</strong> {{ term.quantity_kind }}<br/>
+              <strong>Created:</strong> {{ term.date_created }}<br/>
+              <strong>Updated:</strong> {{ term.date_modified }}<br/>
+            </small>
+          </td>
         </tr>
         {% endfor %}
       </tbody>
