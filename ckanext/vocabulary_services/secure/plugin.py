@@ -11,10 +11,6 @@ class SecureVocabulariesPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.ITemplateHelpers)
 
-    plugins.toolkit.add_ckan_admin_tab(toolkit.config, 'secure_vocabulary_services.secure_upload',
-                                       'Secure Vocabularies',
-                                       config_var='ckan.admin_tabs', icon=None)
-
     # IActions
 
     def get_actions(self):
