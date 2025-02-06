@@ -2,3 +2,5 @@ include README.rst
 include LICENSE
 include requirements.txt
 recursive-include ckanext/vocabulary-service *.html *.json *.js *.less *.css *.mo
+recursive-include ckanext/vocabulary-service/migrations *.py *.ini *.mako
+recursive-include ckanext/vocabulary-service/public *.*
