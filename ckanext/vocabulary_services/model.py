@@ -104,8 +104,8 @@ class VocabularyServiceTerm(DomainObject, BaseModel):
     broader = Column(types.UnicodeText, nullable=True)
     definition = Column(types.UnicodeText, nullable=True)
     quantity_kind = Column(types.UnicodeText, nullable=True)
-    date_created = Column(types.DateTime, default=datetime.datetime.utcnow())
-    date_modified = Column(types.DateTime, default=datetime.datetime.utcnow())
+    date_created = Column(types.DateTime, default=datetime.datetime.now(datetime.UTC))
+    date_modified = Column(types.DateTime, default=datetime.datetime.now(datetime.UTC))
 
     def __init__(self, vocabulary_service_id=None, label=None, uri=None, definition=None, broader=None, quantity_kind=None):
         self.vocabulary_service_id = vocabulary_service_id
