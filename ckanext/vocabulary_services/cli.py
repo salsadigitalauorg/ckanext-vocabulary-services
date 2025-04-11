@@ -16,7 +16,7 @@ config = toolkit.config
 
 
 def refresh_required(service):
-    utc_now = datetime.datetime.now(datetime.UTC)
+    utc_now = datetime.datetime.now(datetime.timezone.utc)
 
     # If a vocabulary_service does not have a `date_last_processed` refresh it
     # i.e. it has never been processed
@@ -80,14 +80,14 @@ def refresh_cmd(ctx):
                                 'emails/body/vocab_service_invalid_urls.txt',
                                 {
                                     'invalid_services': invalid_services,
-                                    'current_utc': datetime.datetime.now(datetime.UTC)
+                                    'current_utc': datetime.datetime.now(datetime.timezone.utc)
                                 }
                             )
                             body_html = toolkit.render(
                                 'emails/body/vocab_service_invalid_urls.html',
                                 {
                                     'invalid_services': invalid_services,
-                                    'current_utc': datetime.datetime.now(datetime.UTC)
+                                    'current_utc': datetime.datetime.now(datetime.timezone.utc)
                                 }
                             )
                             # Improvements for job worker visibility when troubleshooting via logs

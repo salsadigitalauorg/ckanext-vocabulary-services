@@ -102,7 +102,7 @@ def vocabulary_service_term_upsert(context, data_dict):
                 existing_term.broader = broader
                 existing_term.definition = definition
                 existing_term.quantity_kind = quantity_kind
-                existing_term.date_modified = datetime.datetime.now(datetime.UTC)
+                existing_term.date_modified = datetime.datetime.now(datetime.timezone.utc)
 
                 session.add(existing_term)
                 session.commit()
