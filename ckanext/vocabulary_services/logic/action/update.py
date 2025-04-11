@@ -16,9 +16,7 @@ def vocabulary_service_last_processed(context, id):
     vocabulary_service = VocabularyService.get(id)
 
     if vocabulary_service:
-        vocabulary_service.date_last_processed == datetime.datetime.now(datetime.UTC)
-        vocabulary_service.save()
-
+        vocabulary_service.date_last_processed = datetime.datetime.now(datetime.UTC)
 
 def update_vocabulary_terms(context, data_dict):
 
