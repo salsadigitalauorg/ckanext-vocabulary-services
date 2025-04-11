@@ -30,8 +30,8 @@ class VocabularyService(DomainObject, BaseModel):
     update_frequency = Column(types.UnicodeText, nullable=False)
     allow_duplicate_terms = Column(types.Boolean, default=False)
     is_hierarchical = Column(types.Boolean, default=False)
-    date_created = Column(types.DateTime, default=datetime.datetime.now(datetime.UTC))
-    date_modified = Column(types.DateTime, default=datetime.datetime.now(datetime.UTC))
+    date_created = Column(types.DateTime, default=datetime.datetime.now(datetime.timezone.utc))
+    date_modified = Column(types.DateTime, default=datetime.datetime.now(datetime.timezone.utc))
     date_last_processed = Column(types.DateTime)
 
     def __init__(self, type=None, title=None, name=None, schema=None, linked_schema_field=None, uri=None, update_frequency=None, allow_duplicate_terms=False, is_hierarchical=False):
