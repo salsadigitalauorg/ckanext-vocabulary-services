@@ -42,10 +42,10 @@ def upgrade():
             'vocabulary_service_term',
             sa.Column('id', sa.String, primary_key=True),
             sa.Column('vocabulary_service_id', sa.String, sa.ForeignKey('vocabulary_service.id'), nullable=False),
-            sa.Column('term', sa.String, nullable=False),
+            sa.Column('label', sa.String, nullable=False),
             sa.Column('uri', sa.String, nullable=False),
-            sa.Column('description', sa.String, nullable=True),
-            sa.Column('parent_id', sa.String, sa.ForeignKey('vocabulary_service_term.id'), nullable=True),
+            sa.Column('broader', sa.String, nullable=True),
+            sa.Column('definition', sa.String, nullable=True),
             sa.Column('quantity_kind', sa.String, nullable=True),
             sa.Column('date_created', sa.DateTime, default=datetime.datetime.now(datetime.timezone.utc)),
             sa.Column('date_modified', sa.DateTime, default=datetime.datetime.now(datetime.timezone.utc))
