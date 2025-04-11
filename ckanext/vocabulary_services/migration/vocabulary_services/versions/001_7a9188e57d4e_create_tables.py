@@ -32,8 +32,8 @@ def upgrade():
             sa.Column('update_frequency', sa.String, nullable=False),
             sa.Column('allow_duplicate_terms', sa.Boolean, default=False),
             sa.Column('is_hierarchical', sa.Boolean, default=False),
-            sa.Column('date_created', sa.DateTime, default=datetime.datetime.now(datetime.UTC)),
-            sa.Column('date_modified', sa.DateTime, default=datetime.datetime.now(datetime.UTC)),
+            sa.Column('date_created', sa.DateTime, default=datetime.datetime.now(datetime.timezone.utc)),
+            sa.Column('date_modified', sa.DateTime, default=datetime.datetime.now(datetime.timezone.utc)),
             sa.Column('date_last_processed', sa.DateTime)
         )
 
@@ -47,8 +47,8 @@ def upgrade():
             sa.Column('description', sa.String, nullable=True),
             sa.Column('parent_id', sa.String, sa.ForeignKey('vocabulary_service_term.id'), nullable=True),
             sa.Column('quantity_kind', sa.String, nullable=True),
-            sa.Column('date_created', sa.DateTime, default=datetime.datetime.now(datetime.UTC)),
-            sa.Column('date_modified', sa.DateTime, default=datetime.datetime.now(datetime.UTC))
+            sa.Column('date_created', sa.DateTime, default=datetime.datetime.now(datetime.timezone.utc)),
+            sa.Column('date_modified', sa.DateTime, default=datetime.datetime.now(datetime.timezone.utc))
         )
 
 
