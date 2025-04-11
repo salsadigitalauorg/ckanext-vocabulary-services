@@ -95,8 +95,6 @@ def refresh_cmd(ctx):
                             toolkit.enqueue_job(toolkit.mail_recipient, [admin.name, admin.email, subject, body, body_html], title=job_title)
                     except Exception as e:
                         log.error(e)
-
-
         # Check each vocabulary_service to see if it needs to be refreshed
         for service in vocabulary_services:
             if refresh_required(service):

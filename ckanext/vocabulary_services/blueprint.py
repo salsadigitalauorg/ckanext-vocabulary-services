@@ -8,14 +8,12 @@ from ckanext.vocabulary_services import helpers
 from ckanext.invalid_uris.helpers import valid_uri
 from flask import Blueprint
 from ckan.views.api import _finish_ok
-from pprint import pformat
 
 clean_dict = logic.clean_dict
 get_action = toolkit.get_action
 h = toolkit.h
 log = logging.getLogger(__name__)
 parse_params = logic.parse_params
-request = toolkit.request
 tuplize_dict = logic.tuplize_dict
 
 vocabulary_services = Blueprint('vocabulary_services', __name__, url_prefix=u'/ckan-admin')
@@ -123,6 +121,7 @@ def terms(id):
                               'terms': get_action('get_vocabulary_service_terms')({}, id),
                           })
 
+
 def delete(id):
     """
     Delete vocabulary service.
@@ -138,6 +137,7 @@ def delete(id):
         h.flash_error('Can not delete vocabulary service.')
 
     return h.redirect_to('vocabulary_services.index')
+
 
 def vocabulary_service_term_autocomplete(term_name):
     q = request.args.get('incomplete', '')
