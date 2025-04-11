@@ -3,8 +3,8 @@ import logging
 from ckan.plugins.toolkit import get_action
 from ckanext.vocabulary_services.model import VocabularyService, VocabularyServiceTerm
 from ckanext.vocabulary_services import helpers, validator
-from datetime import datetime
-from pprint import pformat
+import datetime
+
 
 log = logging.getLogger(__name__)
 
@@ -16,9 +16,7 @@ def vocabulary_service_last_processed(context, id):
     vocabulary_service = VocabularyService.get(id)
 
     if vocabulary_service:
-        vocabulary_service.date_last_processed = datetime.utcnow()
-        vocabulary_service.save()
-
+        vocabulary_service.date_last_processed = datetime.datetime.now(datetime.timezone.utc)
 
 def update_vocabulary_terms(context, data_dict):
 
