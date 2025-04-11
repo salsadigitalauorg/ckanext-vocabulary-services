@@ -30,8 +30,8 @@ class VocabularyService(DomainObject, BaseModel):
     update_frequency = Column(types.UnicodeText, nullable=False)
     allow_duplicate_terms = Column(types.Boolean, default=False)
     is_hierarchical = Column(types.Boolean, default=False)
-    date_created = Column(types.DateTime, default=datetime.datetime.utcnow())
-    date_modified = Column(types.DateTime, default=datetime.datetime.utcnow())
+    date_created = Column(types.DateTime, default=datetime.datetime.now(datetime.timezone.utc))
+    date_modified = Column(types.DateTime, default=datetime.datetime.now(datetime.timezone.utc))
     date_last_processed = Column(types.DateTime)
 
     def __init__(self, type=None, title=None, name=None, schema=None, linked_schema_field=None, uri=None, update_frequency=None, allow_duplicate_terms=False, is_hierarchical=False):
@@ -104,8 +104,8 @@ class VocabularyServiceTerm(DomainObject, BaseModel):
     broader = Column(types.UnicodeText, nullable=True)
     definition = Column(types.UnicodeText, nullable=True)
     quantity_kind = Column(types.UnicodeText, nullable=True)
-    date_created = Column(types.DateTime, default=datetime.datetime.utcnow())
-    date_modified = Column(types.DateTime, default=datetime.datetime.utcnow())
+    date_created = Column(types.DateTime, default=datetime.datetime.now(datetime.timezone.utc))
+    date_modified = Column(types.DateTime, default=datetime.datetime.now(datetime.timezone.utc))
 
     def __init__(self, vocabulary_service_id=None, label=None, uri=None, definition=None, broader=None, quantity_kind=None):
         self.vocabulary_service_id = vocabulary_service_id

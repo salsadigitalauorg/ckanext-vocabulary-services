@@ -9,14 +9,14 @@ from ckan.views.admin import _get_sysadmins
 from ckanapi import LocalCKAN, ValidationError
 from ckanext.invalid_uris.helpers import valid_uri
 from ckanext.vocabulary_services import model
-from datetime import datetime
+import datetime
 
 log = logging.getLogger(__name__)
 config = toolkit.config
 
 
 def refresh_required(service):
-    utc_now = datetime.utcnow()
+    utc_now = datetime.datetime.now(datetime.timezone.utc)
 
     # If a vocabulary_service does not have a `date_last_processed` refresh it
     # i.e. it has never been processed
@@ -80,14 +80,14 @@ def refresh_cmd(ctx):
                                 'emails/body/vocab_service_invalid_urls.txt',
                                 {
                                     'invalid_services': invalid_services,
-                                    'current_utc': datetime.utcnow()
+                                    'current_utc': datetime.datetime.now(datetime.timezone.utc)
                                 }
                             )
                             body_html = toolkit.render(
                                 'emails/body/vocab_service_invalid_urls.html',
                                 {
                                     'invalid_services': invalid_services,
-                                    'current_utc': datetime.utcnow()
+                                    'current_utc': datetime.datetime.now(datetime.timezone.utc)
                                 }
                             )
                             # Improvements for job worker visibility when troubleshooting via logs
