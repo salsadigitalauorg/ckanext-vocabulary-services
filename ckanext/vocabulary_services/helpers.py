@@ -44,7 +44,7 @@ def check_access(context):
     # `config_option_update` only accessible to sysadmin users
     try:
         logic_check_access('config_option_update', context, {})
-    except Exception as e:
+    except Exception:
         abort(404, 'Not found')
 
 
@@ -111,10 +111,15 @@ def get_linked_schema_field_options(existing_vocab_services, force_include_vocab
         'dataservice__dataset_fields': [],
         'dataset__resource_fields': []
     }
-    def existing_field_names(package_type):
-        field_names = [service.linked_schema_field for service in existing_vocab_services if len(service.linked_schema_field.strip()) > 0 and service.schema == package_type]
 
-        if force_include_vocab and not isinstance(force_include_vocab, dict) and len(force_include_vocab.linked_schema_field.strip()) > 0 and force_include_vocab.linked_schema_field in field_names:
+    def existing_field_names(package_type):
+        field_names = [service.linked_schema_field for service in existing_vocab_services if len(
+            service.linked_schema_field.strip()) > 0 and service.schema == package_type]
+
+        if (force_include_vocab and
+            not isinstance(force_include_vocab, dict) and
+            len(force_include_vocab.linked_schema_field.strip()) > 0 and
+                force_include_vocab.linked_schema_field in field_names):
             field_names.remove(force_include_vocab.linked_schema_field)
 
         return field_names

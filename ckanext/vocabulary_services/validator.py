@@ -1,13 +1,13 @@
 import ckan.plugins.toolkit as tk
 import ckan.lib.navl.dictization_functions as df
 import logging
-from pprint import pformat
 
 from ckanext.vocabulary_services import model
 from ckanext.invalid_uris.helpers import valid_uri
 
 log = logging.getLogger(__name__)
 h = tk.h
+
 
 def not_empty(key, data, errors):
     """
@@ -50,7 +50,8 @@ def validate_vocabulary_service(context, vocabulary_data, is_update=False):
 
     # Only check if this combination fields are not already in use.
     schema_and_linked_schema_field_and_name_exists = len(errors.get('linked_schema_field')) == 0 and \
-                          model.VocabularyService.schema_and_linked_schema_field_and_name_exists(vocabulary_data.get('schema'), vocabulary_data.get('linked_schema_field'), vocabulary_data.get('name'))
+        model.VocabularyService.schema_and_linked_schema_field_and_name_exists(vocabulary_data.get(
+            'schema'), vocabulary_data.get('linked_schema_field'), vocabulary_data.get('name'))
     if not is_update and schema_and_linked_schema_field_and_name_exists is None:
         errors['name'].append(tk._('Name already exists'))
         errors['linked_schema_field'].append(tk._('Linked schema field already exists'))

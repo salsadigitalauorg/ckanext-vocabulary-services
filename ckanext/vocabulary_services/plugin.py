@@ -13,8 +13,6 @@ class VocabularyServicesPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.ITemplateHelpers)
     plugins.implements(plugins.IClick)
 
-    plugins.toolkit.add_ckan_admin_tab(toolkit.config, 'vocabulary_services.index', 'Vocabulary services', config_var='ckan.admin_tabs', icon=None)
-
     # IConfigurer
 
     def update_config(self, config_):

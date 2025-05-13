@@ -11,7 +11,6 @@ class InitDBCommand(CkanCommand):
     max_args = 0
     min_args = 0
 
-
     def __init__(self, name):
         super(InitDBCommand, self).__init__(name)
 

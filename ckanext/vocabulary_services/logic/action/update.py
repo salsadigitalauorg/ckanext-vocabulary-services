@@ -1,10 +1,10 @@
 import logging
 
 from ckan.plugins.toolkit import get_action
-from ckanext.vocabulary_services.model import VocabularyService, VocabularyServiceTerm
+from ckanext.vocabulary_services.model import VocabularyService
 from ckanext.vocabulary_services import helpers, validator
-from datetime import datetime
-from pprint import pformat
+import datetime
+
 
 log = logging.getLogger(__name__)
 
@@ -16,8 +16,7 @@ def vocabulary_service_last_processed(context, id):
     vocabulary_service = VocabularyService.get(id)
 
     if vocabulary_service:
-        vocabulary_service.date_last_processed = datetime.utcnow()
-        vocabulary_service.save()
+        vocabulary_service.date_last_processed = datetime.datetime.now(datetime.timezone.utc)
 
 
 def update_vocabulary_terms(context, data_dict):
@@ -52,8 +51,8 @@ def vocabulary_service_edit(context, data_dict):
     helpers.check_access(context)
 
     # Set the allow duplicate items value.
-    data_dict['allow_duplicate_terms'] = False if not 'allow_duplicate_terms' in data_dict else True
-    data_dict['is_hierarchical'] = False if not 'is_hierarchical' in data_dict else True
+    data_dict['allow_duplicate_terms'] = False if 'allow_duplicate_terms' not in data_dict else True
+    data_dict['is_hierarchical'] = False if 'is_hierarchical' not in data_dict else True
 
     # Load vocabulary service.
     vocabulary_service = VocabularyService.get(data_dict['id'])
@@ -70,6 +69,7 @@ def vocabulary_service_edit(context, data_dict):
     except Exception as e:
         log.error(str(e))
         raise Exception('Error updating vocabulary service.')
+
 
 def vocabulary_service_delete(context, id):
     """
