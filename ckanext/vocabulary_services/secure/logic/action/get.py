@@ -44,14 +44,15 @@ def secure_vocabulary_record(context, data_dict):
 
             lookup_field = secure_vocab_config.get('lookup_field', '')
             display_fields = secure_vocab_config.get('display_fields', '')
-            csv_rows = csv.DictReader(open(secure_filepath, 'r', encoding='utf-8-sig'))
-            for row in csv_rows:
-                organisation = row.get('Organisation', '')
-                if org_title and organisation and organisation.lower() != org_title.lower():
-                    continue
-                if row[lookup_field] == query:
-                    result = {field: row[field] for field in display_fields}
-                    break
+            with open(secure_filepath, 'r', encoding='utf-8-sig') as csv_file:
+                csv_rows = csv.DictReader(csv_file)
+                for row in csv_rows:
+                    organisation = row.get('Organisation', '') or ''
+                    if org_title and organisation.lower() != org_title.lower():
+                        continue
+                    if row[lookup_field] == query:
+                        result = {field: row[field] for field in display_fields}
+                        break
 
     except Exception as e:
         log.error(e)
@@ -69,7 +70,6 @@ def secure_vocabulary_search(context, data_dict):
     limit = data_dict.get('limit', 10)
     is_alt_search_display = data_dict.get('alt_search_display', False)
     org_id = data_dict.get('org_id', False)
-
     org_title = None
     if org_id:
         try:
@@ -98,32 +98,34 @@ def secure_vocabulary_search(context, data_dict):
             search_display_fields = secure_vocab_config.get('search_display_fields')
             alt_search_display = secure_vocab_config.get('alt_search_display_fields')
             search_fields = secure_vocab_config.get('search_fields')
-
-            csv_rows = csv.DictReader(open(secure_filepath, 'r', encoding='utf-8-sig'))
-            for row in csv_rows:
-                # Check to see if result limit has been reached
-                if len(results) >= limit:
-                    break
-                organisation = row.get('Organisation', '')
-                if org_title and organisation and organisation.lower() != org_title.lower():
-                    continue
-                for search_field in search_fields:
-                    if query in row[search_field].lower():
-                        if is_alt_search_display:
-                            result_dict = {
-                                "value": alt_search_display.get('value', '').format(**row),
-                                "name": alt_search_display.get('name', '').format(**row)
-                            }
-                        else:
-                            result_dict = {
-                                "value": search_display_fields.get('value', '').format(**row),
-                                "name": search_display_fields.get('name', '').format(**row)
-                            }
-                        # Check if result already exists before adding it to results list
-                        if not next((result for result in results if result == result_dict), None):
-                            results.append(result_dict)
-                            # Row has been added to results so move onto the next row
-                            break
+            with open(secure_filepath, 'r', encoding='utf-8-sig') as csv_file:
+                csv_rows = csv.DictReader(csv_file)
+                for row in csv_rows:
+                    # Check to see if result limit has been reached
+                    if len(results) >= limit:
+                        break
+                    organisation = row.get('Organisation', '') or ''
+                    if org_title and organisation.lower() != org_title.lower():
+                        continue
+                    for search_field in search_fields:
+                        if query in row[search_field].lower():
+                            if is_alt_search_display:
+                                result_dict = {
+                                    "value": alt_search_display.get('value', '').format(**row),
+                                    "name": alt_search_display.get('name', '').format(**row)
+                                }
+                            else:
+                                result_dict = {
+                                    "value": search_display_fields.get('value', '').format(**row),
+                                    "name": search_display_fields.get('name', '').format(**row)
+                                }
+                            # Check if result already exists before adding it to results list
+                            if not next((result for result in results if result == result_dict), None):
+                                results.append(result_dict)
+                                # Row has been added to results so move onto the next row
+                                break
+                                # Row has been added to results so move onto the next row
+                                break
 
     except Exception as e:
         log.error(e)
