@@ -4,16 +4,14 @@ import ckan.lib.uploader as uploader
 import logging
 import os
 import ckan.plugins.toolkit as toolkit
-import mimetypes
 
-from ckan.common import request, c
 from ckan.logic import clean_dict, parse_params, tuplize_dict
-from ckan.plugins.toolkit import h, render
+from ckan.plugins.toolkit import h, render, request
 from ckanext.vocabulary_services import helpers as vocabulary_services_helpers
-from ckanext.vocabulary_services.secure import crypt, helpers
+from ckanext.vocabulary_services.secure import helpers
 from flask import Blueprint
 from ckan.views.api import _finish_ok
-from pprint import pformat
+
 
 log = logging.getLogger(__name__)
 
@@ -101,7 +99,12 @@ def secure_vocabulary_search(vocabulary_name):
     alt_search_display = True if request.args.get('alt', False) else False
     query = request.args.get('incomplete', '')
     limit = request.args.get('limit', 10)
-    search_dict = {'vocabulary_name': vocabulary_name, 'query': query, 'limit': limit, 'alt_search_display' : alt_search_display}
+    org_id = request.args.get('org_id')
+    search_dict = {'vocabulary_name': vocabulary_name,
+                   'query': query,
+                   'limit': limit,
+                   'alt_search_display': alt_search_display,
+                   'org_id': org_id}
 
     if not query:
         return _finish_ok({})
