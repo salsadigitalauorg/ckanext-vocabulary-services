@@ -9,7 +9,8 @@
       "PositionID",
       "Functional Position",
       "Email",
-      "Name"
+      "Name",
+      "Organisation"
     ],
     "lookup_field": "PositionID",
     "display_fields": [
