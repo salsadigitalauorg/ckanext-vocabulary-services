@@ -18,12 +18,12 @@ def secure_vocabulary_record(context, data_dict):
     query = data_dict.get('query', '').lower()
     org_id = data_dict.get('org_id', False)
 
-    org_title = None
+    org_name = None
     if org_id:
         try:
             organisation = toolkit.get_action('organization_show')(context, {'id': org_id})
             if organisation:
-                org_title = organisation.get('title')
+                org_name = organisation.get('name')
         except toolkit.ObjectNotFound:
             pass
 
@@ -48,7 +48,7 @@ def secure_vocabulary_record(context, data_dict):
                 csv_rows = csv.DictReader(csv_file)
                 for row in csv_rows:
                     organisation = row.get('Organisation', '') or ''
-                    if org_title and organisation.lower() != org_title.lower():
+                    if org_name and organisation.lower() != org_name.lower():
                         continue
                     if row[lookup_field] == query:
                         result = {field: row[field] for field in display_fields}
@@ -70,12 +70,12 @@ def secure_vocabulary_search(context, data_dict):
     limit = data_dict.get('limit', 10)
     is_alt_search_display = data_dict.get('alt_search_display', False)
     org_id = data_dict.get('org_id', False)
-    org_title = None
+    org_name = None
     if org_id:
         try:
             organisation = toolkit.get_action('organization_show')(context, {'id': org_id})
             if organisation:
-                org_title = organisation.get('title')
+                org_name = organisation.get('name')
         except toolkit.ObjectNotFound:
             pass
 
@@ -105,7 +105,7 @@ def secure_vocabulary_search(context, data_dict):
                     if len(results) >= limit:
                         break
                     organisation = row.get('Organisation', '') or ''
-                    if org_title and organisation.lower() != org_title.lower():
+                    if org_name and organisation.lower() != org_name.lower():
                         continue
                     for search_field in search_fields:
                         if query in row[search_field].lower():
