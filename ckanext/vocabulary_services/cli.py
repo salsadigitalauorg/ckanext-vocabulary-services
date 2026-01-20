@@ -23,7 +23,12 @@ def refresh_required(service):
     if not service.date_last_processed:
         return True
 
-    delta = utc_now - service.date_last_processed
+    # Ensure date_last_processed is timezone-aware for comparison
+    date_last_processed = service.date_last_processed
+    if date_last_processed.tzinfo is None:
+        date_last_processed = date_last_processed.replace(tzinfo=datetime.timezone.utc)
+
+    delta = utc_now - date_last_processed
 
     log.debug('>>> UTC now: %s' % utc_now)
     log.debug('>>> Update frequency: %s' % service.update_frequency)
