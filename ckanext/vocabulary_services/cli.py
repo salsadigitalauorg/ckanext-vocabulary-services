@@ -73,7 +73,8 @@ def refresh_cmd(ctx):
             if not valid_uri_resp.get('valid'):
                 invalid_services.append(service)
 
-        if invalid_services and not os.environ.get('DISABLE_CRON_JOB_EMAILS'):
+        # Only send when explicitly enabled (e.g. prod). Default: don't send.
+        if invalid_services and os.environ.get('ENABLE_CRON_JOB_EMAILS', '').lower() == 'true':
             admins = _get_sysadmins().all()
             for admin in admins:
                 if admin.email:
